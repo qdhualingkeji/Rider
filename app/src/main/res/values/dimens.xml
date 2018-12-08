@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="userTypePicSize">120dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="titleBar_Height">50dp</dimen>
+    <dimen name="titleBar_textSize">20sp</dimen>
+
+    <dimen name="functionItemHeight">80dp</dimen>
+
+    <dimen name="infoShowTextSize">17sp</dimen>
+    <dimen name="singleLogoSize">40dp</dimen>
+
+    <dimen name="dividerHeight">0.5dp</dimen>
+    <dimen name="propertyNameText">16sp</dimen>
+    <dimen name="mainItemSize">125dp</dimen>
+</resources>

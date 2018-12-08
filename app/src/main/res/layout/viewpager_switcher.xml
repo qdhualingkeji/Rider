@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/dot1"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_margin="3dp"
+        android:text="待抢单"
+        android:textColor="@drawable/pager_switcher"
+        android:background="@color/pagerSwitcherBg"/>
+    <Button
+        android:id="@+id/dot2"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_margin="3dp"
+        android:text="待取货"
+        android:textColor="@drawable/pager_switcher"
+        android:background="@color/pagerSwitcherBg"/>
+    <Button
+        android:id="@+id/dot3"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_margin="3dp"
+        android:text="待送达"
+        android:textColor="@drawable/pager_switcher"
+        android:background="@color/pagerSwitcherBg"/>
+
+</LinearLayout>

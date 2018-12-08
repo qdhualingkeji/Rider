@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFF</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="pagerSwitcherBg">#00B9FC</color>
+    <color name="switcherSelected">#FFF</color>
+    <color name="switcherUnSelected">#B5E8FD</color>
+    <color name="titleBar_textColor">@android:color/white</color>
+    <color name="titleBar_bgColor">#00C9FF</color>
+    <color name="divide_gray_color">@android:color/darker_gray</color>
+    <color name="divide_dark_gray_color">#878787</color>
+    <color name="item_back">#43CD80</color>
+    <color name="layout_back">#EDEDED</color>
+    <color name="black">#000000</color>
+    <color name="drawLeftBack">#CAE1FF</color>
+    <color name="drawLeftBottomBack">#0BB7F5</color>
+    <color name="drawerleft_text">#5B5B5B</color>
+</resources>
