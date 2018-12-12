@@ -46,8 +46,8 @@ public class UnreadTipView extends FrameLayout {
         super(context, attrs, defStyleAttr);
 
         mContext = context ;
-        msgIconSize = getPxFromDp(25);
-        tipDotSize = getPxFromDp(6);
+        msgIconSize = getPxFromDp(40);
+        tipDotSize = getPxFromDp(15);
 
         initView();
 

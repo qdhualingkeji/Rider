@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.hualing.rider.BuildConfig;
 import com.hualing.rider.aframework.yoni.YoniClient;
@@ -301,7 +302,7 @@ public class GlobalData {
         public static final String GET_CAN_MODIFY_DATA = "getCanModifyData";
         public static final String GET_SMALLCP_IN_QUALITY_CHECKDATA = "getSmallCPInQualityCheckData";
         public static final String GET_XZQX = "getXZQX";
-        public static final String COMMIT_USER_REGISTERED_DATA = "registerUser";
+        public static final String REGISTERED = "register";
         public static final String UPDATE_USER_DATA = "updateUserData";
         public static final String DELETE_USER = "deleteUser";
     }

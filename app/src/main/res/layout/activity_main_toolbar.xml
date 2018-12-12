@@ -20,7 +20,7 @@
 
     <RelativeLayout
         android:id="@+id/readNewMsg"
-        android:layout_width="150dp"
+        android:layout_width="100dp"
         android:layout_gravity="right"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
@@ -28,19 +28,25 @@
 
         <com.hualing.rider.widget.UnreadTipView
             android:id="@+id/unreadState"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentRight="true" />
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:src="@drawable/p002"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             />
 
     </RelativeLayout>
 
+    <Spinner
+        android:id="@+id/stateSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
 
 </FrameLayout>

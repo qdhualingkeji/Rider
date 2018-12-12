@@ -12,12 +12,18 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import com.hualing.rider.R;
+import com.hualing.rider.adapter.MyPagerAdapter;
 import com.hualing.rider.global.TheApplication;
+import com.hualing.rider.widget.pull2refresh.MyListener;
+import com.hualing.rider.widget.pull2refresh.PullToRefreshLayout;
+import com.hualing.rider.widget.pull2refresh.pullableview.PullableListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +37,8 @@ public class MainActivity extends BaseActivity {
     DrawerLayout mDrawerLayout;
     @BindView(R.id.toolBar)
     Toolbar mToolBar;
+    @BindView(R.id.stateSpinner)
+    Spinner mStateSpinner;
     @BindView(R.id.viewPager)
     ViewPager mViewPager;
     @BindView(R.id.dot1)
@@ -39,7 +47,9 @@ public class MainActivity extends BaseActivity {
     Button mDot2;
     @BindView(R.id.dot3)
     Button mDot3;
+    private List<String> stateList;
     private MyPagerAdapter mPagerAdapter;
+    private ArrayAdapter<String> stateAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
@@ -81,7 +91,16 @@ public class MainActivity extends BaseActivity {
         mDrawerToggle.syncState();
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        mPagerAdapter = new MyPagerAdapter();
+        //设置导航Icon，必须在setSupportActionBar(toolbar)之后设置
+        mToolBar.setNavigationIcon(R.drawable.p003);
+
+        stateList = new ArrayList<String>();
+        stateList.add("接单中");
+        stateAdapter=new ArrayAdapter<String>(this,R.layout.item_state,stateList);
+        stateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mStateSpinner.setAdapter(stateAdapter);
+
+        mPagerAdapter = new MyPagerAdapter(MainActivity.this);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -159,47 +178,4 @@ public class MainActivity extends BaseActivity {
         return R.layout.activity_main;
     }
 
-    private class MyPagerAdapter extends PagerAdapter{
-
-        //要切换的View
-        private View view1;
-        private View view2;
-        private View view3;
-        //view集合
-        private List<View> views;
-
-        public MyPagerAdapter(){
-            views = new ArrayList<>();
-            view1 = View.inflate(MainActivity.this,R.layout.banner_layout_one_pager,null);
-            views.add(view1);
-
-            view2 = View.inflate(MainActivity.this,R.layout.banner_layout_two_pager,null);
-            views.add(view2);
-
-            view3 = View.inflate(MainActivity.this,R.layout.banner_layout_three_pager,null);
-            views.add(view3);
-        }
-
-        @Override
-        public int getCount() {
-            return views.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            View v = views.get(position);
-            container.addView(v);
-            return v;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView(views.get(position));
-        }
-    }
 }
