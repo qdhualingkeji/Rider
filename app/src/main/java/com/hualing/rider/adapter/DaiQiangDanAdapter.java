@@ -9,12 +9,15 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.hualing.rider.R;
+import com.hualing.rider.activities.DaiQiangDanDetailActivity;
+import com.hualing.rider.util.IntentUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class DaiQiangDanAdapter extends BaseAdapter {
 
@@ -59,7 +62,40 @@ public class DaiQiangDanAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        View layout1 = convertView.findViewById(R.id.layout1);
+        layout1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goDetail();
+            }
+        });
+        View layout2 = convertView.findViewById(R.id.layout2);
+        layout2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goDetail();
+            }
+        });
+        View layout3 = convertView.findViewById(R.id.layout3);
+        layout3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goDetail();
+            }
+        });
+        View qiangdanBtn = convertView.findViewById(R.id.qiangdanBtn);
+        qiangdanBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         return convertView;
+    }
+
+    private void goDetail(){
+        IntentUtil.openActivityForResult(context, DaiQiangDanDetailActivity.class,-1,null);
     }
 
     class ViewHolder {
