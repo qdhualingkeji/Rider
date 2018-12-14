@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class DrivingRouteOverlay extends OverlayManager {
 
-    private DrivingRouteLine mRouteLine = null;
+    DrivingRouteLine mRouteLine = null;
     boolean focus = false;
 
     /**
@@ -39,7 +39,7 @@ public class DrivingRouteOverlay extends OverlayManager {
     }
 
     @Override
-    public final List<OverlayOptions> getOverlayOptions() {
+    public List<OverlayOptions> getOverlayOptions() {
         if (mRouteLine == null) {
             return null;
         }

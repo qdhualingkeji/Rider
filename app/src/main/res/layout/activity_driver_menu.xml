@@ -101,7 +101,7 @@
             android:background="@drawable/creat_normal_edittext"
             android:drawableLeft="@drawable/radio_red"
             android:drawablePadding="5dp"
-            android:text="青岛尼莫"
+            android:text="青岛颐和国际"
             android:textColor="#303030"
             android:textSize="15dp" />
 
@@ -114,7 +114,7 @@
             android:drawableLeft="@drawable/radio_blue"
             android:drawablePadding="5dp"
             android:hint="您要去哪儿"
-            android:text="青岛颐和国际"
+            android:text="青岛福泰广场"
             android:textSize="15dp" />
 
         <Button

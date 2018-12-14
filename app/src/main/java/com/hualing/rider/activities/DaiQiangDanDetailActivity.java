@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -39,6 +40,7 @@ import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.hualing.rider.R;
 import com.hualing.rider.baiduMap.DriverMenuActivity;
 import com.hualing.rider.overlayutil.DrivingRouteOverlay;
+import com.hualing.rider.overlayutil.MyDrivingRouteOverlay;
 import com.hualing.rider.overlayutil.OverlayManager;
 
 import java.io.IOException;
@@ -52,6 +54,10 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     @BindView(R.id.baiduMapView)
     TextureMapView mMapView;
     BaiduMap mBaidumap;
+    @BindView(R.id.qcd_address_tv)
+    TextView qcdAddressTV;
+    @BindView(R.id.scd_address_tv)
+    TextView scdAddressTV;
     @BindView(R.id.qu_can_dian_iv)
     ImageView qucandianIV;
     @BindView(R.id.song_can_dian_iv)
@@ -72,10 +78,11 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     // 定位相关
     LocationClient mLocClient;
     public MyLocationListenner myListener = new MyLocationListenner();
-    private PlanNode stNode1;
-    private PlanNode enNode1;
-    private PlanNode stNode2;
-    private PlanNode enNode2;
+    private PlanNode qcStNode;
+    private PlanNode qcEnNode;
+    private PlanNode scStNode;
+    private PlanNode scEnNode;
+    private boolean isSongCan=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +99,11 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         mSearch = RoutePlanSearch.newInstance();
         mSearch.setOnGetRoutePlanResultListener(this);
 
-        stNode1 = PlanNode.withCityNameAndPlaceName(loaclcity, "青岛尼莫");
-        enNode1 = PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际");
+        qcStNode = PlanNode.withCityNameAndPlaceName(loaclcity, "青岛尼莫");
+        qcEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, qcdAddressTV.getText().toString());
 
-        stNode2 = PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际");
-        enNode2 = PlanNode.withCityNameAndPlaceName(loaclcity, "青岛远雄国际广场");
+        scStNode = PlanNode.withCityNameAndPlaceName(loaclcity, qcdAddressTV.getText().toString());
+        scEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, scdAddressTV.getText().toString());
 
         AssetManager assetManager = getAssets();
         try {
@@ -154,13 +161,13 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(stNode1).to(enNode1));
-        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(stNode2).to(enNode2));
+        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qcStNode).to(qcEnNode));
+        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
     }
 
     @Override
     public void onMapClick(LatLng latLng) {
-
+        mBaidumap.hideInfoWindow();
     }
 
     @Override
@@ -203,9 +210,13 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
             //mBtnPre.setVisibility(View.VISIBLE);
             //mBtnNext.setVisibility(View.VISIBLE);
             route = result.getRouteLines().get(0);
-            DrivingRouteOverlay overlay = new MyDrivingRouteOverlay(mBaidumap);
+            MyDrivingRouteOverlay overlay = new MyDrivingRouteOverlay(mBaidumap);
             mBaidumap.setOnMarkerClickListener(overlay);
-            routeOverlay = overlay; overlay.setData(result.getRouteLines().get(0));
+            routeOverlay = overlay;
+            overlay.setData(result.getRouteLines().get(0));
+            if(isSongCan)
+                overlay.setSongCan(isSongCan);
+            isSongCan=true;
             overlay.addToMap();
             overlay.zoomToSpan();
         }
@@ -219,28 +230,6 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     @Override
     public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
 
-    }
-
-    // 定制RouteOverly
-    private class MyDrivingRouteOverlay extends DrivingRouteOverlay {
-        public MyDrivingRouteOverlay(BaiduMap baiduMap) {
-            super(baiduMap);
-        }
-
-        @Override
-        public BitmapDescriptor getStartMarker() {
-            if (useDefaultIcon) {
-                return BitmapDescriptorFactory.fromResource(R.drawable.icon_st);
-            }
-            return null;
-        }
-
-        @Override public BitmapDescriptor getTerminalMarker() {
-            if (useDefaultIcon) {
-                return BitmapDescriptorFactory.fromResource(R.drawable.icon_en);
-            }
-            return null;
-        }
     }
 
     /**
@@ -275,6 +264,23 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         public void onReceivePoi(BDLocation poiLocation) {
 
         }
+    }
+
+    @Override
+    protected void onPause() {
+        mMapView.onPause(); super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        mMapView.onResume(); super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mSearch.destroy();
+        mMapView.onDestroy();
+        super.onDestroy();
     }
 
     public void MyToast(String s) {
