@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.hualing.rider.R;
+import com.hualing.rider.adapter.DQDProductAdapter;
 import com.hualing.rider.baiduMap.DriverMenuActivity;
 import com.hualing.rider.overlayutil.DrivingRouteOverlay;
 import com.hualing.rider.overlayutil.MyDrivingRouteOverlay;
@@ -62,6 +64,8 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     ImageView qucandianIV;
     @BindView(R.id.song_can_dian_iv)
     ImageView songcandianIV;
+    @BindView(R.id.product_lv)
+    ListView productLV;
     private String loaclcity = null;
     boolean useDefaultIcon = false;
     // 浏览路线节点相关
@@ -117,6 +121,9 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        DQDProductAdapter dqdProductAdapter = new DQDProductAdapter(DaiQiangDanDetailActivity.this);
+        productLV.setAdapter(dqdProductAdapter);
     }
 
     private void initMap(){
