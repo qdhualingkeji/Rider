@@ -1,6 +1,7 @@
 package com.hualing.rider.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -41,6 +42,8 @@ import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.hualing.rider.R;
 import com.hualing.rider.adapter.DQDProductAdapter;
 import com.hualing.rider.baiduMap.DriverMenuActivity;
+import com.hualing.rider.entity.DaiQiangDanDetailEntity;
+import com.hualing.rider.entity.DaiQiangDanEntity;
 import com.hualing.rider.overlayutil.DrivingRouteOverlay;
 import com.hualing.rider.overlayutil.MyDrivingRouteOverlay;
 import com.hualing.rider.overlayutil.OverlayManager;
@@ -56,6 +59,8 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     @BindView(R.id.baiduMapView)
     TextureMapView mMapView;
     BaiduMap mBaidumap;
+    @BindView(R.id.qcd_name_tv)
+    TextView qcdNameTV;
     @BindView(R.id.qcd_address_tv)
     TextView qcdAddressTV;
     @BindView(R.id.scd_address_tv)
@@ -64,8 +69,14 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     ImageView qucandianIV;
     @BindView(R.id.song_can_dian_iv)
     ImageView songcandianIV;
+    @BindView(R.id.sum_price_tv)
+    TextView sumPriceTV;
+    @BindView(R.id.sum_quantity_tv)
+    TextView sumQuantityTV;
     @BindView(R.id.product_lv)
     ListView productLV;
+    @BindView(R.id.order_number_tv)
+    TextView orderNumberTV;
     private String loaclcity = null;
     boolean useDefaultIcon = false;
     // 浏览路线节点相关
@@ -87,6 +98,7 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     private PlanNode scStNode;
     private PlanNode scEnNode;
     private boolean isSongCan=false;
+    private DQDProductAdapter dqdProductAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,8 +134,31 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
             e.printStackTrace();
         }
 
-        DQDProductAdapter dqdProductAdapter = new DQDProductAdapter(DaiQiangDanDetailActivity.this);
+        DaiQiangDanEntity.DataBean daiQiangDan = (DaiQiangDanEntity.DataBean) getIntent().getSerializableExtra("daiQiangDan");
+        qcdNameTV.setText(daiQiangDan.getQcShopName());
+        qcdAddressTV.setText(daiQiangDan.getQcAddress());
+        scdAddressTV.setText(daiQiangDan.getScAddress());
+
+        String orderNumber = daiQiangDan.getOrderNumber();
+        dqdProductAdapter = new DQDProductAdapter(DaiQiangDanDetailActivity.this);
+        dqdProductAdapter.setNewData(orderNumber);
         productLV.setAdapter(dqdProductAdapter);
+
+        orderNumberTV.setText(orderNumber);
+    }
+
+    public void jiSuanPrice(){
+        Double sumPrice=0.0;
+        Integer sumQuantity=0;
+        int count = dqdProductAdapter.getCount();
+        Log.e("count=====",""+count);
+        for (int i=0;i<count;i++){
+            DaiQiangDanDetailEntity.DataBean product = (DaiQiangDanDetailEntity.DataBean)dqdProductAdapter.getItem(i);
+            sumPrice += product.getPrice();
+            sumQuantity += product.getQuantity();
+        }
+        sumPriceTV.setText("餐品（总价￥"+sumPrice+"）");
+        sumQuantityTV.setText(String.valueOf(sumQuantity));
     }
 
     private void initMap(){

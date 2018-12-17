@@ -74,16 +74,16 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/qc_shop_name_tv"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:text="莎啦啦健康餐"
                     android:textColor="#222421"
                     android:textSize="18sp"/>
 
                 <TextView
+                    android:id="@+id/qc_address_tv"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:text="莎啦啦shalala向阳领路99号"
                     android:textColor="#313431"
                     android:textSize="15sp"/>
 
@@ -117,9 +117,9 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/sc_address_tv"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:text="临港市场和质量监督管理所"
                 android:textColor="#222421"
                 android:textSize="18sp"/>
 

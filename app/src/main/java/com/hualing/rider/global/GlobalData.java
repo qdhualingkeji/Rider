@@ -206,6 +206,10 @@ public class GlobalData {
         public static final String INIT = "000";
         /* 用户登录 */
         public static final String LOGIN = "login";
+        /* 获得待抢单数据 */
+        public static final String GET_DAI_QIANG_DAN = "getDaiQiangDan";
+        /* 获得待抢单详情数据 */
+        public static final String GET_DAI_QIANG_DAN_DETAIL = "getDaiQiangDanDetail";
 
         /*获取需要录入的数据*/
         public static final String GET_INPUTED_DATA = "getInputedData";

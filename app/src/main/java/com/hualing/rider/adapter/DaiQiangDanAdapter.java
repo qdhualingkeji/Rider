@@ -2,15 +2,26 @@ package com.hualing.rider.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.hualing.rider.R;
 import com.hualing.rider.activities.DaiQiangDanDetailActivity;
+import com.hualing.rider.activities.LoginActivity;
+import com.hualing.rider.activities.MainActivity;
+import com.hualing.rider.entity.DaiQiangDanEntity;
+import com.hualing.rider.global.GlobalData;
+import com.hualing.rider.util.AllActivitiesHolder;
 import com.hualing.rider.util.IntentUtil;
+import com.hualing.rider.utils.AsynClient;
+import com.hualing.rider.utils.GsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,18 +32,42 @@ import butterknife.OnClick;
 
 public class DaiQiangDanAdapter extends BaseAdapter {
 
-    private List<String> mData;
+    private List<DaiQiangDanEntity.DataBean> mData;
     private Activity context;
 
     public DaiQiangDanAdapter(Activity context){
         this.context = context;
-        mData = new ArrayList<String>();
-        mData.add("aaa");
-        mData.add("bbb");
-        mData.add("bbb");
-        mData.add("bbb");
-        mData.add("bbb");
-        mData.add("bbb");
+        mData = new ArrayList<DaiQiangDanEntity.DataBean>();
+    }
+
+    public void setNewData(){
+
+        RequestParams params = AsynClient.getRequestParams();
+        Gson gson = new Gson();
+
+        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.GET_DAI_QIANG_DAN, context, params, new GsonHttpResponseHandler() {
+            @Override
+            protected Object parseResponse(String rawJsonData) throws Throwable {
+                return null;
+            }
+
+            @Override
+            public void onFailure(int statusCode, String rawJsonData, Object errorResponse) {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, String rawJsonResponse, Object response) {
+                Log.e("rawJsonResponse======",""+rawJsonResponse);
+
+                Gson gson = new Gson();
+                DaiQiangDanEntity daiQiangDanEntity = gson.fromJson(rawJsonResponse, DaiQiangDanEntity.class);
+                if (daiQiangDanEntity.getCode() == 100) {
+                    mData = daiQiangDanEntity.getData();
+                    notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     @Override
@@ -62,25 +97,26 @@ public class DaiQiangDanAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        final DaiQiangDanEntity.DataBean daiQiangDan = mData.get(position);
         View layout1 = convertView.findViewById(R.id.layout1);
         layout1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goDetail();
+                goDetail(daiQiangDan);
             }
         });
         View layout2 = convertView.findViewById(R.id.layout2);
         layout2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goDetail();
+                goDetail(daiQiangDan);
             }
         });
         View layout3 = convertView.findViewById(R.id.layout3);
         layout3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goDetail();
+                goDetail(daiQiangDan);
             }
         });
         View qiangdanBtn = convertView.findViewById(R.id.qiangdanBtn);
@@ -91,22 +127,26 @@ public class DaiQiangDanAdapter extends BaseAdapter {
             }
         });
 
+        holder.mQcShopNameTV.setText(daiQiangDan.getQcShopName());
+        holder.mQcAddressTV.setText(daiQiangDan.getQcAddress());
+        holder.mScAddressTV.setText(daiQiangDan.getScAddress());
+
         return convertView;
     }
 
-    private void goDetail(){
-        IntentUtil.openActivityForResult(context, DaiQiangDanDetailActivity.class,-1,null);
+    private void goDetail(DaiQiangDanEntity.DataBean daiQiangDan){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("daiQiangDan",daiQiangDan);
+        IntentUtil.openActivityForResult(context, DaiQiangDanDetailActivity.class,-1,bundle);
     }
 
     class ViewHolder {
-        /*
-        @BindView(R.id.name)
-        TextView mName;
-        @BindView(R.id.dh)
-        TextView mDh;
-        @BindView(R.id.date)
-        TextView mDate;
-        */
+        @BindView(R.id.qc_shop_name_tv)
+        TextView mQcShopNameTV;
+        @BindView(R.id.qc_address_tv)
+        TextView mQcAddressTV;
+        @BindView(R.id.sc_address_tv)
+        TextView mScAddressTV;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

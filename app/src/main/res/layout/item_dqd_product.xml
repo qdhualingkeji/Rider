@@ -6,9 +6,9 @@
     android:paddingRight="10dp">
 
     <TextView
+        android:id="@+id/product_name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="肥牛"
         android:textSize="15sp"
         android:layout_gravity="center_vertical"/>
 
@@ -18,11 +18,18 @@
         android:layout_gravity="center_vertical">
 
         <TextView
+            android:id="@+id/quantity_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="x1"
             android:textSize="15sp"
             android:layout_alignParentRight="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="x"
+            android:textSize="15sp"
+            android:layout_toLeftOf="@id/quantity_tv"/>
 
     </RelativeLayout>
 
