@@ -1,6 +1,5 @@
 package com.hualing.rider.adapter;
 
-import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +21,10 @@ public class MyPagerAdapter extends PagerAdapter {
     private View view3;
     //view集合
     private List<View> views;
-    private PullableListView mListView1;
-    PullToRefreshLayout mRefresher1;
+    private PullableListView mListView1,mListView2;
+    PullToRefreshLayout mRefresher1,mRefresher2;
     private DaiQiangDanAdapter mAdapter1;
+    private DaiQuHuoAdapter mAdapter2;
 
     public MyPagerAdapter(MainActivity mainActivity){
         views = new ArrayList<>();
@@ -39,6 +39,13 @@ public class MyPagerAdapter extends PagerAdapter {
         views.add(view1);
 
         view2 = View.inflate(mainActivity,R.layout.banner_layout_two_pager,null);
+        mListView2 = view2.findViewById(R.id.listView);
+        mRefresher2 = view2.findViewById(R.id.refresher);
+
+        mRefresher2.setOnRefreshListener(new MyListener());
+        mAdapter2 = new DaiQuHuoAdapter(mainActivity);
+        mAdapter2.setNewData();
+        mListView2.setAdapter(mAdapter2);
         views.add(view2);
 
         view3 = View.inflate(mainActivity,R.layout.banner_layout_three_pager,null);
