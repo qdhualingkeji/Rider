@@ -25,12 +25,15 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapPoi;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.RouteLine;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.BikingRouteResult;
+import com.baidu.mapapi.search.route.DrivingRouteLine;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
 import com.baidu.mapapi.search.route.IndoorRouteResult;
@@ -51,6 +54,7 @@ import com.hualing.rider.overlayutil.OverlayManager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 
 import butterknife.BindView;
 
@@ -70,6 +74,10 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     ImageView qucandianIV;
     @BindView(R.id.song_can_dian_iv)
     ImageView songcandianIV;
+    @BindView(R.id.sy_time_tv)
+    TextView syTimeTV;
+    @BindView(R.id.to_qcdjl_tv)
+    TextView toQcdjlTV;
     @BindView(R.id.sum_price_tv)
     TextView sumPriceTV;
     @BindView(R.id.sum_quantity_tv)
@@ -100,6 +108,9 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     private PlanNode scEnNode;
     private boolean isSongCan=false;
     private DQDProductAdapter dqdProductAdapter;
+    private boolean isFirstLoc = true; // 是否首次定位
+    private DecimalFormat decimalFormat=new DecimalFormat("0.0");
+    private float syTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -256,9 +267,17 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
             MyDrivingRouteOverlay overlay = new MyDrivingRouteOverlay(mBaidumap);
             mBaidumap.setOnMarkerClickListener(overlay);
             routeOverlay = overlay;
-            overlay.setData(result.getRouteLines().get(0));
+            DrivingRouteLine routeLine = result.getRouteLines().get(0);
+            overlay.setData(routeLine);
             if(isSongCan)
                 overlay.setSongCan(isSongCan);
+            else {
+                int duration = routeLine.getDistance();
+                syTime = (float)duration/1330;
+                float durationFloat = (float) duration/1000;
+                toQcdjlTV.setText(decimalFormat.format(durationFloat));
+                syTimeTV.setText("剩余"+decimalFormat.format((float)syTime)+"分钟");
+            }
             isSongCan=true;
             overlay.addToMap();
             overlay.zoomToSpan();
@@ -296,10 +315,33 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
                 MapStatus.Builder builder = new MapStatus.Builder();
                 builder.target(ll).zoom(18.0f);
                 mBaidumap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
-                start_edit.setText(location.getAddrStr());
-                MyToast("当前所在位置：" + location.getAddrStr());
-                driver_city.setText(location.getCity());
+                //start_edit.setText(location.getAddrStr());
+                //MyToast("当前所在位置：" + location.getAddrStr());
+                //driver_city.setText(location.getCity());
                 loaclcity = location.getCity();
+
+                MyToast("========"+location.getLocType());
+                if (location.getLocType() == BDLocation.TypeGpsLocation) {
+                    // GPS定位结果
+                    Toast.makeText(DaiQiangDanDetailActivity.this, location.getAddrStr(), Toast.LENGTH_SHORT).show();
+                }
+                else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
+                    // 网络定位结果
+                    Toast.makeText(DaiQiangDanDetailActivity.this, location.getAddrStr(), Toast.LENGTH_SHORT).show();
+                }
+                else if (location.getLocType() == BDLocation.TypeOffLineLocation) {
+                    // 离线定位结果
+                    Toast.makeText(DaiQiangDanDetailActivity.this, location.getAddrStr(), Toast.LENGTH_SHORT).show();
+                }
+                else if (location.getLocType() == BDLocation.TypeServerError) {
+                    Toast.makeText(DaiQiangDanDetailActivity.this, "服务器错误，请检查", Toast.LENGTH_SHORT).show();
+                }
+                else if (location.getLocType() == BDLocation.TypeNetWorkException) {
+                    Toast.makeText(DaiQiangDanDetailActivity.this, "网络错误，请检查", Toast.LENGTH_SHORT).show();
+                }
+                else if (location.getLocType() == BDLocation.TypeCriteriaException) {
+                    Toast.makeText(DaiQiangDanDetailActivity.this, "手机模式错误，请检查是否飞行", Toast.LENGTH_SHORT).show();
+                }
             }
             */
         }
