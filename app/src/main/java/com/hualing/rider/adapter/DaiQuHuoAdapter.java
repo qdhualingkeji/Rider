@@ -1,6 +1,8 @@
 package com.hualing.rider.adapter;
 
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +11,11 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.hualing.rider.R;
+import com.hualing.rider.activities.QianWangQuCanActivity;
 import com.hualing.rider.entity.DaiQiangDanEntity;
 import com.hualing.rider.entity.DaiQuHuoEntity;
 import com.hualing.rider.global.GlobalData;
+import com.hualing.rider.util.IntentUtil;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -89,12 +93,24 @@ public class DaiQuHuoAdapter extends BaseAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
 
-        DaiQuHuoEntity.DataBean dataBean = mData.get(position);
+        final DaiQuHuoEntity.DataBean dataBean = mData.get(position);
         holder.mPriceTV.setText("￥"+dataBean.getPrice());
         holder.mQhAddressTV.setText(dataBean.getQhAddress());
         holder.mShAddressTV.setText(dataBean.getShAddress());
+        holder.mQwqcBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goQWQC(dataBean);
+            }
+        });
 
         return convertView;
+    }
+
+    private void goQWQC(DaiQuHuoEntity.DataBean daiQuHuo){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("daiQuHuo",daiQuHuo);
+        IntentUtil.openActivityForResult(context, QianWangQuCanActivity.class,-1,bundle);
     }
 
     class ViewHolder {
@@ -104,6 +120,8 @@ public class DaiQuHuoAdapter extends BaseAdapter {
         TextView mQhAddressTV;
         @BindView(R.id.sh_address_tv)
         TextView mShAddressTV;
+        @BindView(R.id.qwqcBtn)
+        CardView mQwqcBtn;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
