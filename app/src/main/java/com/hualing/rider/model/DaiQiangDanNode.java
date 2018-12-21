@@ -27,6 +27,16 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
     private float toQcdjl;
     private float toScdjl;
     private String orderNumber;
+    private float syTime;
+
+    public float getSyTime() {
+        return syTime;
+    }
+
+    public void setSyTime(float syTime) {
+        this.syTime = syTime;
+    }
+
     // 搜索相关
     RoutePlanSearch mSearch = null;
     private DaiQiangDanAdapter daiQiangDanAdapter;
@@ -115,6 +125,7 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
                     //Log.e("ToQc=,ToSc=,orNur=",toQcdjl+","+toScdjl+","+orderNumber+","+dataBean.getOrderNumber());
                     if(toScdjl==0.0) {
                         dataBean.setToQcdjl(toQcdjl);
+                        dataBean.setSyTime(syTime);
                     }
                     else {
                         dataBean.setToScdjl(toScdjl);
@@ -123,7 +134,11 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
             }
 
         //}
-        daiQiangDanAdapter.notifyDataSetChanged();
+        DaiQiangDanAdapter.jiSuanPosition++;
+        if(DaiQiangDanAdapter.jiSuanPosition==daiQiangDanAdapter.getDqdNodeList().size()) {
+            daiQiangDanAdapter.notifyDataSetChanged();
+            DaiQiangDanAdapter.jiSuanPosition = 0;
+        }
     }
 
     @Override
@@ -172,11 +187,12 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
             //Log.e("durationFloat===",""+durationFloat);
             if(qcStNode==null&&qcEnNode==null){//说明是送餐点
                 //Log.e("setToScdjl===",""+durationFloat);
-                setToScdjl(durationFloat);
+                toScdjl = durationFloat;
             }
             else{
                 //Log.e("setToQcdjl===",""+durationFloat);
-                setToQcdjl(durationFloat);
+                toQcdjl = durationFloat;
+                syTime = (float)duration/1330;
             }
             initKm();
         }

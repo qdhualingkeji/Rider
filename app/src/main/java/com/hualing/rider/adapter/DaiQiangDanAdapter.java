@@ -57,6 +57,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
     private List<DaiQiangDanEntity.DataBean> mData;
     private MainActivity context;
     private DecimalFormat decimalFormat=new DecimalFormat("0.0");
+    public static int jiSuanPosition=0;
 
     public List<DaiQiangDanNode> getDqdNodeList() {
         return dqdNodeList;
@@ -200,6 +201,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
             }
         });
 
+        holder.mSyTimeTV.setText("剩余"+decimalFormat.format((float)daiQiangDan.getSyTime())+"分钟");
         holder.mToQcdjlTV.setText(decimalFormat.format(daiQiangDan.getToQcdjl()));
         holder.mToScdjlTV.setText(decimalFormat.format(daiQiangDan.getToScdjl()));
         holder.mQcShopNameTV.setText(daiQiangDan.getQcShopName());
@@ -217,6 +219,8 @@ public class DaiQiangDanAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
+        @BindView(R.id.sy_time_tv)
+        TextView mSyTimeTV;
         @BindView(R.id.to_qcdjl_tv)
         TextView mToQcdjlTV;
         @BindView(R.id.to_scdjl_tv)

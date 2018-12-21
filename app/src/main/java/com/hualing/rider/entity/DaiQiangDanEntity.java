@@ -82,5 +82,15 @@ public class DaiQiangDanEntity {
 		private String qcAddress;
 		private String scAddress;
 		private String orderNumber;
+
+		public float getSyTime() {
+			return syTime;
+		}
+
+		public void setSyTime(float syTime) {
+			this.syTime = syTime;
+		}
+
+		private float syTime;
 	}
 }
