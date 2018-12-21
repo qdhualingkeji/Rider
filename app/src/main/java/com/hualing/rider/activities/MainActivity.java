@@ -48,7 +48,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity implements OnGetRoutePlanResultListener {
+public class MainActivity extends BaseActivity {
 
     @BindView(R.id.drawerLayout)
     DrawerLayout mDrawerLayout;
@@ -68,11 +68,6 @@ public class MainActivity extends BaseActivity implements OnGetRoutePlanResultLi
     private MyPagerAdapter mPagerAdapter;
     private ArrayAdapter<String> stateAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
-    // 搜索相关
-    RoutePlanSearch mSearch = null;
-    private String loaclcity = null;
-    private List<DaiQiangDanNode> dqdNodeList;
-    private int dqdPosition=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +76,6 @@ public class MainActivity extends BaseActivity implements OnGetRoutePlanResultLi
 
     @Override
     protected void initLogic() {
-        // 初始化搜索模块，注册事件监听
-        mSearch = RoutePlanSearch.newInstance();
-        mSearch.setOnGetRoutePlanResultListener(this);
 
         getScreenSize();
 
@@ -125,7 +117,6 @@ public class MainActivity extends BaseActivity implements OnGetRoutePlanResultLi
         stateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mStateSpinner.setAdapter(stateAdapter);
 
-        dqdNodeList = new ArrayList<DaiQiangDanNode>();
         mPagerAdapter = new MyPagerAdapter(MainActivity.this);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -143,33 +134,6 @@ public class MainActivity extends BaseActivity implements OnGetRoutePlanResultLi
             }
         });
         mDot1.setSelected(true);
-    }
-
-    /**
-     * 初始化待抢单地点
-     */
-    public void initDaiQiangDanNode(List<DaiQiangDanEntity.DataBean> dqdList){
-        DaiQiangDanNode qcNode = null;
-        DaiQiangDanNode scNode = null;
-        int dqdListSize = dqdList.size();
-        for (int i = 0; i<dqdListSize; i++) {
-            DaiQiangDanEntity.DataBean dataBean = dqdList.get(i);
-            qcNode = new DaiQiangDanNode();
-            qcNode.setQcStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛尼莫"));
-            qcNode.setQcEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
-            qcNode.setOrderNumber(dataBean.getOrderNumber());
-            dqdNodeList.add(qcNode);
-
-            scNode = new DaiQiangDanNode();
-            scNode.setScStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
-            scNode.setScEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛远雄国际广场"));
-            qcNode.setOrderNumber(dataBean.getOrderNumber());
-            dqdNodeList.add(scNode);
-        }
-    }
-
-    public List<DaiQiangDanNode> getDqdNodeList(){
-        return dqdNodeList;
     }
 
     @OnClick({R.id.dot1,R.id.dot2,R.id.dot3})
@@ -238,83 +202,5 @@ public class MainActivity extends BaseActivity implements OnGetRoutePlanResultLi
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-    }
-
-    public void jiSuanDaiQiangDanKm(){
-        int dqdSize = dqdNodeList.size();
-        for (int i = 0;i<dqdSize; i++) {
-            DaiQiangDanNode dqdNode = dqdNodeList.get(i);
-            if(dqdNode.getQcStNode()!=null&&dqdNode.getQcEnNode()!=null)
-                mSearch.drivingSearch((new DrivingRoutePlanOption()).from(dqdNode.getQcStNode()).to(dqdNode.getQcEnNode()));
-            else
-                mSearch.drivingSearch((new DrivingRoutePlanOption()).from(dqdNode.getScStNode()).to(dqdNode.getScEnNode()));
-        }
-    }
-
-    @Override
-    public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
-
-    }
-
-    @Override
-    public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {
-
-    }
-
-    @Override
-    public void onGetMassTransitRouteResult(MassTransitRouteResult massTransitRouteResult) {
-
-    }
-
-    @Override
-    public void onGetDrivingRouteResult(DrivingRouteResult result) {
-        if (result.error == SearchResult.ERRORNO.NO_ERROR) {
-            //nodeIndex = -1;
-            //mBtnPre.setVisibility(View.VISIBLE);
-            //mBtnNext.setVisibility(View.VISIBLE);
-            //route = result.getRouteLines().get(0);
-            //MyDrivingRouteOverlay overlay = new MyDrivingRouteOverlay(mBaidumap);
-            //mBaidumap.setOnMarkerClickListener(overlay);
-            //routeOverlay = overlay;
-            DrivingRouteLine routeLine = result.getRouteLines().get(0);
-            //overlay.setData(routeLine);
-            //if(isSongCan)
-                //overlay.setSongCan(isSongCan);
-            //else {
-                int duration = routeLine.getDistance();
-                /*
-                syTime = (float)duration/1330;
-                float durationFloat = (float) duration/1000;
-                toQcdjlTV.setText(decimalFormat.format(durationFloat));
-                syTimeTV.setText("剩余"+decimalFormat.format((float)syTime)+"分钟");
-                */
-            //}
-            //isSongCan=true;
-            //overlay.addToMap();
-            //overlay.zoomToSpan();
-
-            DaiQiangDanNode dqdNode = dqdNodeList.get(dqdPosition);
-            float durationFloat = (float) duration/1000;
-            Log.e("result=","111111111111");
-            if(dqdNode.getQcStNode()==null&&dqdNode.getQcEnNode()==null){//说明是送餐点
-                dqdNode.setToScdjl(durationFloat);
-            }
-            else{
-                dqdNode.setToQcdjl(durationFloat);
-            }
-            dqdPosition++;
-            if(dqdPosition==dqdNodeList.size())
-                mPagerAdapter.getmAdapter1().initKm();
-        }
-    }
-
-    @Override
-    public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
-
-    }
-
-    @Override
-    public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
-
     }
 }
