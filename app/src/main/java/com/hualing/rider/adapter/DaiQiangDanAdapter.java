@@ -44,24 +44,35 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DaiQiangDanAdapter extends BaseAdapter implements OnGetRoutePlanResultListener {
+public class DaiQiangDanAdapter extends BaseAdapter {
+
+    public List<DaiQiangDanEntity.DataBean> getmData() {
+        return mData;
+    }
+
+    public void setmData(List<DaiQiangDanEntity.DataBean> mData) {
+        this.mData = mData;
+    }
 
     private List<DaiQiangDanEntity.DataBean> mData;
     private MainActivity context;
     private DecimalFormat decimalFormat=new DecimalFormat("0.0");
+
+    public List<DaiQiangDanNode> getDqdNodeList() {
+        return dqdNodeList;
+    }
+
+    public void setDqdNodeList(List<DaiQiangDanNode> dqdNodeList) {
+        this.dqdNodeList = dqdNodeList;
+    }
+
     private List<DaiQiangDanNode> dqdNodeList;
-    private int dqdPosition=0;
-    // 搜索相关
-    RoutePlanSearch mSearch = null;
+
     private String loaclcity = null;
 
     public DaiQiangDanAdapter(MainActivity context){
         this.context = context;
         mData = new ArrayList<DaiQiangDanEntity.DataBean>();
-
-        // 初始化搜索模块，注册事件监听
-        mSearch = RoutePlanSearch.newInstance();
-        mSearch.setOnGetRoutePlanResultListener(this);
         dqdNodeList = new ArrayList<DaiQiangDanNode>();
     }
 
@@ -106,16 +117,18 @@ public class DaiQiangDanAdapter extends BaseAdapter implements OnGetRoutePlanRes
         int dqdListSize = dqdList.size();
         for (int i = 0; i<dqdListSize; i++) {
             DaiQiangDanEntity.DataBean dataBean = dqdList.get(i);
-            qcNode = new DaiQiangDanNode();
+            qcNode = new DaiQiangDanNode(this);
             qcNode.setQcStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛尼莫"));
             qcNode.setQcEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
             qcNode.setOrderNumber(dataBean.getOrderNumber());
+            Log.e("qcNode111==",qcNode.getOrderNumber());
             dqdNodeList.add(qcNode);
 
-            scNode = new DaiQiangDanNode();
+            scNode = new DaiQiangDanNode(this);
             scNode.setScStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
             scNode.setScEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛远雄国际广场"));
             qcNode.setOrderNumber(dataBean.getOrderNumber());
+            Log.e("qcNode222==",qcNode.getOrderNumber());
             dqdNodeList.add(scNode);
         }
     }
@@ -124,35 +137,13 @@ public class DaiQiangDanAdapter extends BaseAdapter implements OnGetRoutePlanRes
         int dqdSize = dqdNodeList.size();
         for (int i = 0;i<dqdSize; i++) {
             DaiQiangDanNode dqdNode = dqdNodeList.get(i);
-            if(dqdNode.getQcStNode()!=null&&dqdNode.getQcEnNode()!=null)
-                mSearch.drivingSearch((new DrivingRoutePlanOption()).from(dqdNode.getQcStNode()).to(dqdNode.getQcEnNode()));
-            else
-                mSearch.drivingSearch((new DrivingRoutePlanOption()).from(dqdNode.getScStNode()).to(dqdNode.getScEnNode()));
+            Log.e("dqdNode==",dqdNode.getOrderNumber());
+            dqdNode.drivingSearch();
+            if(i==2)
+                break;
         }
     }
 
-    public void initKm(){
-        for (int i=0;i<dqdNodeList.size();i++){
-            DaiQiangDanNode node = dqdNodeList.get(i);
-
-            for (int j=0;j<mData.size();j++) {
-                DaiQiangDanEntity.DataBean dataBean = mData.get(j);
-                if(node.getOrderNumber()!=null&&node.getOrderNumber().equals(dataBean.getOrderNumber())) {
-                    if(node.getToScdjl()==0.0) {
-                        Log.e("ToQcdjl======",""+node.getToQcdjl());
-                        dataBean.setToQcdjl(node.getToQcdjl());
-                    }
-                    else {
-                        Log.e("ToScdjl======",""+node.getToScdjl());
-                        dataBean.setToScdjl(node.getToScdjl());
-                    }
-                }
-            }
-
-
-        }
-        notifyDataSetChanged();
-    }
 
     @Override
     public int getCount() {
@@ -219,73 +210,6 @@ public class DaiQiangDanAdapter extends BaseAdapter implements OnGetRoutePlanRes
         holder.orderNumber=daiQiangDan.getOrderNumber();
 
         return convertView;
-    }
-
-    @Override
-    public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
-
-    }
-
-    @Override
-    public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {
-
-    }
-
-    @Override
-    public void onGetMassTransitRouteResult(MassTransitRouteResult massTransitRouteResult) {
-
-    }
-
-    @Override
-    public void onGetDrivingRouteResult(DrivingRouteResult result) {
-        if (result.error == SearchResult.ERRORNO.NO_ERROR) {
-            //nodeIndex = -1;
-            //mBtnPre.setVisibility(View.VISIBLE);
-            //mBtnNext.setVisibility(View.VISIBLE);
-            //route = result.getRouteLines().get(0);
-            //MyDrivingRouteOverlay overlay = new MyDrivingRouteOverlay(mBaidumap);
-            //mBaidumap.setOnMarkerClickListener(overlay);
-            //routeOverlay = overlay;
-            DrivingRouteLine routeLine = result.getRouteLines().get(0);
-            //overlay.setData(routeLine);
-            //if(isSongCan)
-            //overlay.setSongCan(isSongCan);
-            //else {
-            int duration = routeLine.getDistance();
-                /*
-                syTime = (float)duration/1330;
-                float durationFloat = (float) duration/1000;
-                toQcdjlTV.setText(decimalFormat.format(durationFloat));
-                syTimeTV.setText("剩余"+decimalFormat.format((float)syTime)+"分钟");
-                */
-            //}
-            //isSongCan=true;
-            //overlay.addToMap();
-            //overlay.zoomToSpan();
-
-            DaiQiangDanNode dqdNode = dqdNodeList.get(dqdPosition);
-            float durationFloat = (float) duration/1000;
-            Log.e("durationFloat===",""+durationFloat);
-            if(dqdNode.getQcStNode()==null&&dqdNode.getQcEnNode()==null){//说明是送餐点
-                dqdNode.setToScdjl(durationFloat);
-            }
-            else{
-                dqdNode.setToQcdjl(durationFloat);
-            }
-            dqdPosition++;
-            if(dqdPosition==dqdNodeList.size())
-                initKm();
-        }
-    }
-
-    @Override
-    public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
-
-    }
-
-    @Override
-    public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
-
     }
 
     private void goDetail(DaiQiangDanEntity.DataBean daiQiangDan){
