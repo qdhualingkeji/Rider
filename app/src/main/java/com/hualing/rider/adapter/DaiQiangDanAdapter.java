@@ -101,7 +101,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
                 DaiQiangDanEntity daiQiangDanEntity = gson.fromJson(rawJsonResponse, DaiQiangDanEntity.class);
                 if (daiQiangDanEntity.getCode() == 100) {
                     mData = daiQiangDanEntity.getData();
-                    notifyDataSetChanged();
+                    notifyDataSetChanged();//这是适配器第一次发出通知，先获取地址，为后面计算路程提供的
                     initDaiQiangDanNode(mData);
                     jiSuanDaiQiangDanKm();
                 }

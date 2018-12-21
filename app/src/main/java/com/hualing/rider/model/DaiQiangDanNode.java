@@ -135,9 +135,9 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
 
         //}
         DaiQiangDanAdapter.jiSuanPosition++;
-        if(DaiQiangDanAdapter.jiSuanPosition==daiQiangDanAdapter.getDqdNodeList().size()) {
+        if(DaiQiangDanAdapter.jiSuanPosition==daiQiangDanAdapter.getDqdNodeList().size()) {//当已计算出的数量等于适配器里集合的元素数量时，适配器再发出第二次通知，刷新出路程来
             daiQiangDanAdapter.notifyDataSetChanged();
-            DaiQiangDanAdapter.jiSuanPosition = 0;
+            DaiQiangDanAdapter.jiSuanPosition = 0;//发出通知之后，把数量标志清零
         }
     }
 

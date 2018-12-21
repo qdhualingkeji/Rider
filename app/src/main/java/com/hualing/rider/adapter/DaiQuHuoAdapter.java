@@ -9,17 +9,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.baidu.mapapi.search.route.PlanNode;
 import com.google.gson.Gson;
 import com.hualing.rider.R;
 import com.hualing.rider.activities.QianWangQuCanActivity;
-import com.hualing.rider.entity.DaiQiangDanEntity;
 import com.hualing.rider.entity.DaiQuHuoEntity;
 import com.hualing.rider.global.GlobalData;
+import com.hualing.rider.model.DaiQuHuoNode;
 import com.hualing.rider.util.IntentUtil;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +31,33 @@ import butterknife.ButterKnife;
 public class DaiQuHuoAdapter extends BaseAdapter {
 
     private List<DaiQuHuoEntity.DataBean> mData;
+    private List<DaiQuHuoNode> dqhNodeList;
+
+    public List<DaiQuHuoNode> getDqhNodeList() {
+        return dqhNodeList;
+    }
+
+    public void setDqhNodeList(List<DaiQuHuoNode> dqhNodeList) {
+        this.dqhNodeList = dqhNodeList;
+    }
+
+    public List<DaiQuHuoEntity.DataBean> getmData() {
+        return mData;
+    }
+
+    public void setmData(List<DaiQuHuoEntity.DataBean> mData) {
+        this.mData = mData;
+    }
+
     private Activity context;
+    private String loaclcity = null;
+    private DecimalFormat decimalFormat=new DecimalFormat("0.0");
+    public static int jiSuanPosition=0;
 
     public DaiQuHuoAdapter(Activity context){
         this.context = context;
         mData = new ArrayList<DaiQuHuoEntity.DataBean>();
+        dqhNodeList = new ArrayList<DaiQuHuoNode>();
     }
 
     public void setNewData(){
@@ -61,9 +85,45 @@ public class DaiQuHuoAdapter extends BaseAdapter {
                 if (daiQuHuoEntity.getCode() == 100) {
                     mData = daiQuHuoEntity.getData();
                     notifyDataSetChanged();
+                    initDaiQuHuoNode(mData);
+                    jiSuanDaiQiangDanKm();
                 }
             }
         });
+    }
+
+    /**
+     * 初始化待抢单地点
+     */
+    public void initDaiQuHuoNode(List<DaiQuHuoEntity.DataBean> dqdList){
+        DaiQuHuoNode qhNode = null;
+        DaiQuHuoNode shNode = null;
+        int dqdListSize = dqdList.size();
+        for (int i = 0; i<dqdListSize; i++) {
+            DaiQuHuoEntity.DataBean dataBean = dqdList.get(i);
+            qhNode = new DaiQuHuoNode(this);
+            qhNode.setQhStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛尼莫"));
+            qhNode.setQhEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
+            qhNode.setOrderNumber(dataBean.getOrderNumber());
+            //Log.e("qcNode111==",qcNode.getOrderNumber());
+            dqhNodeList.add(qhNode);
+
+            shNode = new DaiQuHuoNode(this);
+            shNode.setShStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
+            shNode.setShEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛远雄国际广场"));
+            shNode.setOrderNumber(dataBean.getOrderNumber());
+            //Log.e("qcNode222==",shNode.getOrderNumber()+"");
+            dqhNodeList.add(shNode);
+        }
+    }
+
+    public void jiSuanDaiQiangDanKm(){
+        int dqdSize = dqhNodeList.size();
+        for (int i = 0;i<dqdSize; i++) {
+            DaiQuHuoNode dqhNode = dqhNodeList.get(i);
+            //Log.e("dqhNode==",dqhNode.getOrderNumber()+"");
+            dqhNode.drivingSearch();
+        }
     }
 
     @Override
@@ -94,7 +154,10 @@ public class DaiQuHuoAdapter extends BaseAdapter {
         }
 
         final DaiQuHuoEntity.DataBean dataBean = mData.get(position);
+        holder.mSyTimeTV.setText(decimalFormat.format((float)(dataBean.getQhSyTime()+dataBean.getShSyTime()))+"分钟内送达");
         holder.mPriceTV.setText("￥"+dataBean.getPrice());
+        holder.mToQhdjlTV.setText(decimalFormat.format(dataBean.getToQhdjl()));
+        holder.mToShdjlTV.setText(decimalFormat.format(dataBean.getToShdjl()));
         holder.mQhAddressTV.setText(dataBean.getQhAddress());
         holder.mShAddressTV.setText(dataBean.getShAddress());
         holder.mQwqcBtn.setOnClickListener(new View.OnClickListener() {
@@ -114,8 +177,14 @@ public class DaiQuHuoAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
+        @BindView(R.id.sy_time_tv)
+        TextView mSyTimeTV;
         @BindView(R.id.price_tv)
         TextView mPriceTV;
+        @BindView(R.id.to_qhdjl_tv)
+        TextView mToQhdjlTV;
+        @BindView(R.id.to_shdjl_tv)
+        TextView mToShdjlTV;
         @BindView(R.id.qh_address_tv)
         TextView mQhAddressTV;
         @BindView(R.id.sh_address_tv)

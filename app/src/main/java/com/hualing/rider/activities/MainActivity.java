@@ -1,9 +1,7 @@
 package com.hualing.rider.activities;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,36 +9,16 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.baidu.mapapi.SDKInitializer;
-import com.baidu.mapapi.search.core.SearchResult;
-import com.baidu.mapapi.search.route.BikingRouteResult;
-import com.baidu.mapapi.search.route.DrivingRouteLine;
-import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
-import com.baidu.mapapi.search.route.DrivingRouteResult;
-import com.baidu.mapapi.search.route.IndoorRouteResult;
-import com.baidu.mapapi.search.route.MassTransitRouteResult;
-import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
-import com.baidu.mapapi.search.route.PlanNode;
-import com.baidu.mapapi.search.route.RoutePlanSearch;
-import com.baidu.mapapi.search.route.TransitRouteResult;
-import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.hualing.rider.R;
 import com.hualing.rider.adapter.MyPagerAdapter;
-import com.hualing.rider.entity.DaiQiangDanEntity;
 import com.hualing.rider.global.TheApplication;
-import com.hualing.rider.model.DaiQiangDanNode;
-import com.hualing.rider.overlayutil.MyDrivingRouteOverlay;
-import com.hualing.rider.widget.pull2refresh.MyListener;
-import com.hualing.rider.widget.pull2refresh.PullToRefreshLayout;
-import com.hualing.rider.widget.pull2refresh.pullableview.PullableListView;
 
 import java.util.ArrayList;
 import java.util.List;

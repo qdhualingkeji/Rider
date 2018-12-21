@@ -71,5 +71,42 @@ public class DaiQuHuoEntity {
 
         private String shAddress;
         private String orderNumber;
+        private float toQhdjl;
+        private float toShdjl;
+
+        public float getToQhdjl() {
+            return toQhdjl;
+        }
+
+        public void setToQhdjl(float toQhdjl) {
+            this.toQhdjl = toQhdjl;
+        }
+
+        public float getToShdjl() {
+            return toShdjl;
+        }
+
+        public void setToShdjl(float toShdjl) {
+            this.toShdjl = toShdjl;
+        }
+
+        private float qhSyTime;
+        private float shSyTime;
+
+        public float getQhSyTime() {
+            return qhSyTime;
+        }
+
+        public void setQhSyTime(float qhSyTime) {
+            this.qhSyTime = qhSyTime;
+        }
+
+        public float getShSyTime() {
+            return shSyTime;
+        }
+
+        public void setShSyTime(float shSyTime) {
+            this.shSyTime = shSyTime;
+        }
     }
 }
