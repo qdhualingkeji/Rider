@@ -111,16 +111,14 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
             //Log.e("ToQc=,ToSc=111111==",toQcdjl+","+toScdjl);
             for (int i=0;i<mData.size();i++) {
                 DaiQiangDanEntity.DataBean dataBean = mData.get(i);
-                //Log.e("ToQc=,ToSc=,orNur=",toQcdjl+","+toScdjl+","+orderNumber+","+dataBean.getOrderNumber());
                 if(orderNumber!=null&&orderNumber.equals(dataBean.getOrderNumber())) {
-                    /*
+                    //Log.e("ToQc=,ToSc=,orNur=",toQcdjl+","+toScdjl+","+orderNumber+","+dataBean.getOrderNumber());
                     if(toScdjl==0.0) {
                         dataBean.setToQcdjl(toQcdjl);
                     }
                     else {
                         dataBean.setToScdjl(toScdjl);
                     }
-                    */
                 }
             }
 

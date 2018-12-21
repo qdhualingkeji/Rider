@@ -121,14 +121,14 @@ public class DaiQiangDanAdapter extends BaseAdapter {
             qcNode.setQcStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛尼莫"));
             qcNode.setQcEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
             qcNode.setOrderNumber(dataBean.getOrderNumber());
-            Log.e("qcNode111==",qcNode.getOrderNumber());
+            //Log.e("qcNode111==",qcNode.getOrderNumber());
             dqdNodeList.add(qcNode);
 
             scNode = new DaiQiangDanNode(this);
             scNode.setScStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
             scNode.setScEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛远雄国际广场"));
-            qcNode.setOrderNumber(dataBean.getOrderNumber());
-            Log.e("qcNode222==",qcNode.getOrderNumber());
+            scNode.setOrderNumber(dataBean.getOrderNumber());
+            //Log.e("qcNode222==",scNode.getOrderNumber()+"");
             dqdNodeList.add(scNode);
         }
     }
@@ -137,10 +137,8 @@ public class DaiQiangDanAdapter extends BaseAdapter {
         int dqdSize = dqdNodeList.size();
         for (int i = 0;i<dqdSize; i++) {
             DaiQiangDanNode dqdNode = dqdNodeList.get(i);
-            Log.e("dqdNode==",dqdNode.getOrderNumber());
+            //Log.e("dqdNode==",dqdNode.getOrderNumber()+"");
             dqdNode.drivingSearch();
-            if(i==2)
-                break;
         }
     }
 
