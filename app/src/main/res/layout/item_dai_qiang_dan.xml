@@ -50,6 +50,7 @@
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/to_qcdjl_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0.5"
@@ -103,6 +104,7 @@
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/to_scdjl_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1.3"

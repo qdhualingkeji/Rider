@@ -17,12 +17,14 @@ import com.hualing.rider.activities.LoginActivity;
 import com.hualing.rider.activities.MainActivity;
 import com.hualing.rider.entity.DaiQiangDanEntity;
 import com.hualing.rider.global.GlobalData;
+import com.hualing.rider.model.DaiQiangDanNode;
 import com.hualing.rider.util.AllActivitiesHolder;
 import com.hualing.rider.util.IntentUtil;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +35,10 @@ import butterknife.OnClick;
 public class DaiQiangDanAdapter extends BaseAdapter {
 
     private List<DaiQiangDanEntity.DataBean> mData;
-    private Activity context;
+    private MainActivity context;
+    private DecimalFormat decimalFormat=new DecimalFormat("0.0");
 
-    public DaiQiangDanAdapter(Activity context){
+    public DaiQiangDanAdapter(MainActivity context){
         this.context = context;
         mData = new ArrayList<DaiQiangDanEntity.DataBean>();
     }
@@ -65,9 +68,35 @@ public class DaiQiangDanAdapter extends BaseAdapter {
                 if (daiQiangDanEntity.getCode() == 100) {
                     mData = daiQiangDanEntity.getData();
                     notifyDataSetChanged();
+                    context.initDaiQiangDanNode(mData);
+                    context.jiSuanDaiQiangDanKm();
                 }
             }
         });
+    }
+
+    public void initKm(){
+        List<DaiQiangDanNode> nodeList = context.getDqdNodeList();
+        for (int i=0;i<nodeList.size();i++){
+            DaiQiangDanNode node = nodeList.get(i);
+
+            for (int j=0;j<mData.size();j++) {
+                DaiQiangDanEntity.DataBean dataBean = mData.get(j);
+                if(node.getOrderNumber()!=null&&node.getOrderNumber().equals(dataBean.getOrderNumber())) {
+                    if(node.getToScdjl()==0.0) {
+                        Log.e("ToQcdjl======",""+node.getToQcdjl());
+                        dataBean.setToQcdjl(node.getToQcdjl());
+                    }
+                    else {
+                        Log.e("ToScdjl======",""+node.getToScdjl());
+                        dataBean.setToScdjl(node.getToScdjl());
+                    }
+                }
+            }
+
+
+        }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -127,9 +156,12 @@ public class DaiQiangDanAdapter extends BaseAdapter {
             }
         });
 
+        holder.mToQcdjlTV.setText(decimalFormat.format(daiQiangDan.getToQcdjl()));
+        holder.mToScdjlTV.setText(decimalFormat.format(daiQiangDan.getToScdjl()));
         holder.mQcShopNameTV.setText(daiQiangDan.getQcShopName());
         holder.mQcAddressTV.setText(daiQiangDan.getQcAddress());
         holder.mScAddressTV.setText(daiQiangDan.getScAddress());
+        holder.orderNumber=daiQiangDan.getOrderNumber();
 
         return convertView;
     }
@@ -141,12 +173,17 @@ public class DaiQiangDanAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
+        @BindView(R.id.to_qcdjl_tv)
+        TextView mToQcdjlTV;
+        @BindView(R.id.to_scdjl_tv)
+        TextView mToScdjlTV;
         @BindView(R.id.qc_shop_name_tv)
         TextView mQcShopNameTV;
         @BindView(R.id.qc_address_tv)
         TextView mQcAddressTV;
         @BindView(R.id.sc_address_tv)
         TextView mScAddressTV;
+        private String orderNumber;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

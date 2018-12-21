@@ -36,6 +36,25 @@ public class DaiQiangDanEntity {
 	public static class DataBean implements Serializable {
 
 		private String qcShopName;
+		private float toQcdjl;
+
+		public float getToQcdjl() {
+			return toQcdjl;
+		}
+
+		public void setToQcdjl(float toQcdjl) {
+			this.toQcdjl = toQcdjl;
+		}
+
+		public float getToScdjl() {
+			return toScdjl;
+		}
+
+		public void setToScdjl(float toScdjl) {
+			this.toScdjl = toScdjl;
+		}
+
+		private float toScdjl;
 		public String getQcShopName() {
 			return qcShopName;
 		}

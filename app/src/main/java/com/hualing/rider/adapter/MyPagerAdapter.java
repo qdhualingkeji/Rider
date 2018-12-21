@@ -23,6 +23,15 @@ public class MyPagerAdapter extends PagerAdapter {
     private List<View> views;
     private PullableListView mListView1,mListView2;
     PullToRefreshLayout mRefresher1,mRefresher2;
+
+    public DaiQiangDanAdapter getmAdapter1() {
+        return mAdapter1;
+    }
+
+    public void setmAdapter1(DaiQiangDanAdapter mAdapter1) {
+        this.mAdapter1 = mAdapter1;
+    }
+
     private DaiQiangDanAdapter mAdapter1;
     private DaiQuHuoAdapter mAdapter2;
 
