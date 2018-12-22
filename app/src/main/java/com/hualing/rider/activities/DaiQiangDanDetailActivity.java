@@ -30,6 +30,8 @@ import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.CityInfo;
+import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.RouteLine;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.BikingRouteResult;
@@ -41,6 +43,7 @@ import com.baidu.mapapi.search.route.MassTransitRouteResult;
 import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
+import com.baidu.mapapi.search.route.SuggestAddrInfo;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.hualing.rider.R;
@@ -55,6 +58,7 @@ import com.hualing.rider.overlayutil.OverlayManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -107,6 +111,7 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     private PlanNode scStNode;
     private PlanNode scEnNode;
     private boolean isSongCan=false;
+    private boolean isRpSongCan=false;
     private DQDProductAdapter dqdProductAdapter;
     private boolean isFirstLoc = true; // 是否首次定位
     private DecimalFormat decimalFormat=new DecimalFormat("0.0");
@@ -127,10 +132,13 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         mSearch = RoutePlanSearch.newInstance();
         mSearch.setOnGetRoutePlanResultListener(this);
 
-        qcStNode = PlanNode.withCityNameAndPlaceName(loaclcity, "青岛尼莫");
+        qcStNode = PlanNode.withCityNameAndPlaceName(loaclcity, "向阳岭路77号");
         qcEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, qcdAddressTV.getText().toString());
+        //qcStNode = PlanNode.withLocation(new LatLng(35.88425874859243,120.05011426610518));
+        //qcEnNode = PlanNode.withLocation(new LatLng(35.87989416713656,120.05558494666093));
 
         scStNode = PlanNode.withCityNameAndPlaceName(loaclcity, qcdAddressTV.getText().toString());
+        //scStNode = PlanNode.withLocation(new LatLng(50,50));
         scEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, scdAddressTV.getText().toString());
 
         AssetManager assetManager = getAssets();
@@ -188,9 +196,54 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
         // 可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setIsNeedAddress(true);// 可选，设置是否需要地址信息，默认不需要
+        // 设置是否需要返回位置语义化信息，可以在BDLocation.getLocationDescribe()中得到数据，ex:"在天安门附近"，
+        // 可以用作地址信息的补充
+        option.setIsNeedLocationDescribe(true);
         option.setIsNeedLocationPoiList(true);// 可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+        /**
+         * 设置定位模式 Battery_Saving 低功耗模式 Device_Sensors 仅设备(Gps)模式 Hight_Accuracy
+         * 高精度模式
+         /   */
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        // 设置是否打开gps进行定位
+        option.setOpenGps(true);
+        // 设置扫描间隔，单位是毫秒 当<1000(1s)时，定时定位无效
+        option.setScanSpan(1000);
         mLocClient.setLocOption(option);
         mLocClient.start();
+    }
+
+    private void rePosition(SuggestAddrInfo sai){
+        List<PoiInfo> startPoiInfo = sai.getSuggestStartNode();
+        if(startPoiInfo!=null){
+            LatLng location = startPoiInfo.get(0).location;
+            if(isRpSongCan)
+                scStNode = PlanNode.withLocation(new LatLng(location.latitude,location.longitude));
+            else
+                qcStNode = PlanNode.withLocation(new LatLng(location.latitude,location.longitude));
+        }
+        List<PoiInfo> endPoiInfo = sai.getSuggestEndNode();
+        if(endPoiInfo!=null){
+            LatLng location = endPoiInfo.get(0).location;
+            if(isRpSongCan)
+                scEnNode = PlanNode.withLocation(new LatLng(location.latitude,location.longitude));
+            else
+                qcEnNode = PlanNode.withLocation(new LatLng(location.latitude,location.longitude));
+        }
+        if(isRpSongCan)
+            mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
+        else
+            mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qcStNode).to(qcEnNode));
+        //Log.e("isRpSongCan===", "" + isRpSongCan);
+        isRpSongCan=true;
+        /*
+        Log.e("addressSize===", "" + poiInfo.size());
+        for (int i = 0;i<poiInfo.size();i++) {
+            Log.e("location===", "" + poiInfo.get(i).location);
+            Log.e("city===", "" + poiInfo.get(i).city);
+            Log.e("address===", "" + poiInfo.get(i).address);
+        }
+        */
     }
 
     @Override
@@ -252,8 +305,20 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
             Log.e("DrivingRouteResult=","地址有歧义");
             // 起终点或途经点地址有岐义，通过以下接口获取建议查询信息
-            result.getSuggestAddrInfo();
+            SuggestAddrInfo sai = result.getSuggestAddrInfo();
             MyToast("地址有歧义");
+            rePosition(sai);
+
+            /*
+            List<PoiInfo> poiInfo = result.getSuggestAddrInfo().getSuggestEndNode();
+            Log.e("addressSize===", "" + poiInfo.size());
+            for (int i = 0;i<poiInfo.size();i++) {
+                Log.e("location===", "" + poiInfo.get(i).location);
+                Log.e("city===", "" + poiInfo.get(i).city);
+                Log.e("address===", "" + poiInfo.get(i).address);
+            }
+            */
+
             return;
         }
         if (result.error == BikingRouteResult.ERRORNO.PERMISSION_UNFINISHED){
@@ -269,6 +334,7 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
             routeOverlay = overlay;
             DrivingRouteLine routeLine = result.getRouteLines().get(0);
             overlay.setData(routeLine);
+            Log.e("isSongCan111===", "" + isSongCan);
             if(isSongCan)
                 overlay.setSongCan(isSongCan);
             else {

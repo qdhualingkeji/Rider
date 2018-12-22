@@ -115,7 +115,7 @@
                                 android:id="@+id/qcd_address_tv"
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
-                                android:text="青岛颐和国际"
+                                android:text="东方金石青岛胶南市双珠路288号东方金石807"
                                 android:textColor="#313431"
                                 android:textSize="15sp"/>
 
