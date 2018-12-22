@@ -112,6 +112,8 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     private PlanNode scEnNode;
     private boolean isSongCan=false;
     private boolean isRpSongCan=false;
+    private boolean haveSCD=false;
+    private boolean haveQCD=false;
     private DQDProductAdapter dqdProductAdapter;
     private boolean isFirstLoc = true; // 是否首次定位
     private DecimalFormat decimalFormat=new DecimalFormat("0.0");
@@ -239,10 +241,18 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
                 qcEnNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
             }
         }
-        if(isRpSongCan)
-            mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
-        else
-            mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qcStNode).to(qcEnNode));
+        if(isRpSongCan) {
+            if(!haveSCD) {
+                //Log.e("333333333", "333333333333");
+                mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
+            }
+        }
+        else {
+            if(!haveQCD) {
+                //Log.e("44444444444", "444444444");
+                mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qcStNode).to(qcEnNode));
+            }
+        }
         //Log.e("isRpSongCan===", "" + isRpSongCan);
         isRpSongCan=true;
         /*
@@ -309,9 +319,10 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     @Override
     public void onGetDrivingRouteResult(DrivingRouteResult result) {
         if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-            //MyToast("抱歉，未找到结果");
+            //Log.e("DrivingRouteResult=","抱歉，未找到结果");
             SuggestAddrInfo sai = result.getSuggestAddrInfo();
             rePosition(sai);
+            return;
         }
         if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
             //Log.e("DrivingRouteResult=","地址有歧义");
@@ -346,14 +357,17 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
             DrivingRouteLine routeLine = result.getRouteLines().get(0);
             overlay.setData(routeLine);
             //Log.e("isSongCan111===", "" + isSongCan);
-            if(isSongCan)
+            if(isSongCan) {
                 overlay.setSongCan(isSongCan);
+                haveSCD=true;
+            }
             else {
                 int duration = routeLine.getDistance();
                 syTime = (float)duration/1330;
                 float durationFloat = (float) duration/1000;
                 toQcdjlTV.setText(decimalFormat.format(durationFloat));
                 syTimeTV.setText("剩余"+decimalFormat.format((float)syTime)+"分钟");
+                haveQCD=true;
             }
             isSongCan=true;
             overlay.addToMap();

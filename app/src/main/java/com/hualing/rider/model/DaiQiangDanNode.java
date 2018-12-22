@@ -2,6 +2,8 @@ package com.hualing.rider.model;
 
 import android.util.Log;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.BikingRouteResult;
 import com.baidu.mapapi.search.route.DrivingRouteLine;
@@ -12,6 +14,7 @@ import com.baidu.mapapi.search.route.MassTransitRouteResult;
 import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
+import com.baidu.mapapi.search.route.SuggestAddrInfo;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.hualing.rider.adapter.DaiQiangDanAdapter;
@@ -40,6 +43,7 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
     // 搜索相关
     RoutePlanSearch mSearch = null;
     private DaiQiangDanAdapter daiQiangDanAdapter;
+    private boolean haveCD=false;
 
     public DaiQiangDanNode(DaiQiangDanAdapter daiQiangDanAdapter){
         // 初始化搜索模块，注册事件监听
@@ -107,10 +111,15 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
     private PlanNode scEnNode;
 
     public void drivingSearch(){
-        if(qcStNode!=null&&qcEnNode!=null)
+        if(qcStNode!=null&&qcEnNode!=null) {
+            Log.e("11111111111111","111111111111");
             mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qcStNode).to(qcEnNode));
-        else
+        }
+        else {
+            //if(scStNode!=null&&scEnNode!=null)
+            Log.e("222222222222","22222222222222");
             mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
+        }
     }
 
     public void initKm(){
@@ -135,9 +144,50 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
 
         //}
         DaiQiangDanAdapter.jiSuanPosition++;
+        //Log.e("jiSuanPosition===",""+DaiQiangDanAdapter.jiSuanPosition);
         if(DaiQiangDanAdapter.jiSuanPosition==daiQiangDanAdapter.getDqdNodeList().size()) {//当已计算出的数量等于适配器里集合的元素数量时，适配器再发出第二次通知，刷新出路程来
             daiQiangDanAdapter.notifyDataSetChanged();
             DaiQiangDanAdapter.jiSuanPosition = 0;//发出通知之后，把数量标志清零
+        }
+    }
+
+    private void rePosition(SuggestAddrInfo sai){
+        List<PoiInfo> startPoiInfo = sai.getSuggestStartNode();
+        if(startPoiInfo!=null){
+            LatLng location = startPoiInfo.get(0).location;
+            Log.e("ddddddddd",qcStNode+","+qcEnNode);
+            if(qcStNode==null&&qcEnNode==null) {
+                Log.e("scStNode:lat,long===",location.latitude+","+location.longitude);
+                scStNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
+            }
+            else {
+                Log.e("qcStNode:lat,long===",location.latitude+","+location.longitude);
+                qcStNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
+            }
+        }
+        List<PoiInfo> endPoiInfo = sai.getSuggestEndNode();
+        if(endPoiInfo!=null){
+            LatLng location = endPoiInfo.get(0).location;
+            Log.e("ddddddddd111",qcStNode+","+qcEnNode);
+            if(qcStNode==null&&qcEnNode==null) {
+                Log.e("scEnNode:lat,long===",location.latitude+","+location.longitude);
+                scEnNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
+            }
+            else {
+                Log.e("qcEnNode:lat,long===",location.latitude+","+location.longitude);
+                qcEnNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
+            }
+        }
+
+        Log.e("haveCD=======",""+haveCD);
+        if(!haveCD) {
+            if (scStNode != null && scEnNode != null) {
+                //mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
+            } else {
+                //if(qcStNode!=null&&qcEnNode!=null)
+                //Log.e("44444444444",""+qcStNode);
+                mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qcStNode).to(qcEnNode));
+            }
         }
     }
 
@@ -158,6 +208,25 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
 
     @Override
     public void onGetDrivingRouteResult(DrivingRouteResult result) {
+        if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+            Log.e("jiSuanPosition===","1111111111");
+            //MyToast("抱歉，未找到结果");
+            SuggestAddrInfo sai = result.getSuggestAddrInfo();
+            rePosition(sai);
+            return;
+        }
+        /*
+        if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
+            //Log.e("jiSuanPosition===","2222222222222");
+            //Log.e("DrivingRouteResult=","地址有歧义");
+            // 起终点或途经点地址有岐义，通过以下接口获取建议查询信息
+            SuggestAddrInfo sai = result.getSuggestAddrInfo();
+            //MyToast("地址有歧义");
+            rePosition(sai);
+            Log.e("haveCD======",""+haveCD);
+            return;
+        }
+        */
         if (result.error == SearchResult.ERRORNO.NO_ERROR) {
             //nodeIndex = -1;
             //mBtnPre.setVisibility(View.VISIBLE);
@@ -195,6 +264,8 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
                 syTime = (float)duration/1330;
             }
             initKm();
+            haveCD=true;
+            Log.e("haveCD1111======",""+haveCD);
         }
     }
 

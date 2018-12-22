@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.BikingRouteResult;
 import com.baidu.mapapi.search.route.DrivingRouteLine;
@@ -119,18 +120,26 @@ public class DaiQiangDanAdapter extends BaseAdapter {
         for (int i = 0; i<dqdListSize; i++) {
             DaiQiangDanEntity.DataBean dataBean = dqdList.get(i);
             qcNode = new DaiQiangDanNode(this);
-            qcNode.setQcStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛尼莫"));
-            qcNode.setQcEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
+            qcNode.setQcStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "山东省青岛市黄岛区隐珠镇向阳岭路7号"));
+            qcNode.setQcEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getQcAddress()));
+            //qcNode.setQcStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛尼莫"));
+            //qcNode.setQcEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
             qcNode.setOrderNumber(dataBean.getOrderNumber());
             //Log.e("qcNode111==",qcNode.getOrderNumber());
             dqdNodeList.add(qcNode);
 
+            /*
             scNode = new DaiQiangDanNode(this);
-            scNode.setScStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
-            scNode.setScEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛远雄国际广场"));
+            scNode.setScStNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getQcAddress()));
+            scNode.setScEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getScAddress()));
+            //scNode.setScStNode(PlanNode.withLocation(new LatLng(35.88220442808485,120.04091561768301)));
+            //scNode.setScEnNode(PlanNode.withLocation(new LatLng(35.88425874859243,120.05011426610518)));
             scNode.setOrderNumber(dataBean.getOrderNumber());
             //Log.e("qcNode222==",scNode.getOrderNumber()+"");
             dqdNodeList.add(scNode);
+            */
+            if(i==1)
+                break;
         }
     }
 
