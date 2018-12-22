@@ -106,7 +106,6 @@
                                 android:id="@+id/qcd_name_tv"
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
-                                android:text="莎啦啦健康餐"
                                 android:textColor="#000"
                                 android:textSize="18sp"
                                 android:gravity="center_vertical"/>
@@ -115,7 +114,6 @@
                                 android:id="@+id/qcd_address_tv"
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
-                                android:text="东方金石青岛胶南市双珠路288号东方金石807"
                                 android:textColor="#313431"
                                 android:textSize="15sp"/>
 
@@ -145,7 +143,6 @@
                             android:id="@+id/scd_address_tv"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="青岛远雄国际广场"
                             android:textColor="#000"
                             android:textSize="18sp"/>
 

@@ -132,14 +132,20 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         mSearch = RoutePlanSearch.newInstance();
         mSearch.setOnGetRoutePlanResultListener(this);
 
-        qcStNode = PlanNode.withCityNameAndPlaceName(loaclcity, "向阳岭路77号");
+        DaiQiangDanEntity.DataBean daiQiangDan = (DaiQiangDanEntity.DataBean) getIntent().getSerializableExtra("daiQiangDan");
+        qcdNameTV.setText(daiQiangDan.getQcShopName());
+        qcdAddressTV.setText(daiQiangDan.getQcAddress());
+        scdAddressTV.setText(daiQiangDan.getScAddress());
+
+        qcStNode = PlanNode.withCityNameAndPlaceName(loaclcity, "山东省青岛市黄岛区隐珠镇向阳岭路7号");
         qcEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, qcdAddressTV.getText().toString());
         //qcStNode = PlanNode.withLocation(new LatLng(35.88425874859243,120.05011426610518));
         //qcEnNode = PlanNode.withLocation(new LatLng(35.87989416713656,120.05558494666093));
 
         scStNode = PlanNode.withCityNameAndPlaceName(loaclcity, qcdAddressTV.getText().toString());
-        //scStNode = PlanNode.withLocation(new LatLng(50,50));
         scEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, scdAddressTV.getText().toString());
+        //scStNode = PlanNode.withLocation(new LatLng(35.88220442808485,120.04091561768301));
+        //scEnNode = PlanNode.withLocation(new LatLng(35.88425874859243,120.05011426610518));
 
         AssetManager assetManager = getAssets();
         try {
@@ -153,11 +159,6 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        DaiQiangDanEntity.DataBean daiQiangDan = (DaiQiangDanEntity.DataBean) getIntent().getSerializableExtra("daiQiangDan");
-        qcdNameTV.setText(daiQiangDan.getQcShopName());
-        qcdAddressTV.setText(daiQiangDan.getQcAddress());
-        scdAddressTV.setText(daiQiangDan.getScAddress());
 
         String orderNumber = daiQiangDan.getOrderNumber();
         dqdProductAdapter = new DQDProductAdapter(DaiQiangDanDetailActivity.this);
@@ -217,18 +218,26 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         List<PoiInfo> startPoiInfo = sai.getSuggestStartNode();
         if(startPoiInfo!=null){
             LatLng location = startPoiInfo.get(0).location;
-            if(isRpSongCan)
-                scStNode = PlanNode.withLocation(new LatLng(location.latitude,location.longitude));
-            else
-                qcStNode = PlanNode.withLocation(new LatLng(location.latitude,location.longitude));
+            if(isRpSongCan) {
+                Log.e("scStNode:lat,long===",location.latitude+","+location.longitude);
+                scStNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
+            }
+            else {
+                Log.e("qcStNode:lat,long===",location.latitude+","+location.longitude);
+                qcStNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
+            }
         }
         List<PoiInfo> endPoiInfo = sai.getSuggestEndNode();
         if(endPoiInfo!=null){
             LatLng location = endPoiInfo.get(0).location;
-            if(isRpSongCan)
-                scEnNode = PlanNode.withLocation(new LatLng(location.latitude,location.longitude));
-            else
-                qcEnNode = PlanNode.withLocation(new LatLng(location.latitude,location.longitude));
+            if(isRpSongCan) {
+                Log.e("scEnNode:lat,long===",location.latitude+","+location.longitude);
+                scEnNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
+            }
+            else {
+                Log.e("qcEnNode:lat,long===",location.latitude+","+location.longitude);
+                qcEnNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
+            }
         }
         if(isRpSongCan)
             mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
@@ -300,13 +309,15 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     @Override
     public void onGetDrivingRouteResult(DrivingRouteResult result) {
         if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-            MyToast("抱歉，未找到结果");
+            //MyToast("抱歉，未找到结果");
+            SuggestAddrInfo sai = result.getSuggestAddrInfo();
+            rePosition(sai);
         }
         if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
-            Log.e("DrivingRouteResult=","地址有歧义");
+            //Log.e("DrivingRouteResult=","地址有歧义");
             // 起终点或途经点地址有岐义，通过以下接口获取建议查询信息
             SuggestAddrInfo sai = result.getSuggestAddrInfo();
-            MyToast("地址有歧义");
+            //MyToast("地址有歧义");
             rePosition(sai);
 
             /*
@@ -334,7 +345,7 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
             routeOverlay = overlay;
             DrivingRouteLine routeLine = result.getRouteLines().get(0);
             overlay.setData(routeLine);
-            Log.e("isSongCan111===", "" + isSongCan);
+            //Log.e("isSongCan111===", "" + isSongCan);
             if(isSongCan)
                 overlay.setSongCan(isSongCan);
             else {
