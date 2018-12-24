@@ -1,11 +1,13 @@
 package com.hualing.rider.adapter;
 
+import android.app.Dialog;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.hualing.rider.R;
 import com.hualing.rider.activities.MainActivity;
+import com.hualing.rider.global.TheApplication;
 import com.hualing.rider.widget.pull2refresh.MyListener;
 import com.hualing.rider.widget.pull2refresh.PullToRefreshLayout;
 import com.hualing.rider.widget.pull2refresh.pullableview.PullableListView;
@@ -59,6 +61,9 @@ public class MyPagerAdapter extends PagerAdapter {
 
         view3 = View.inflate(mainActivity,R.layout.banner_layout_three_pager,null);
         views.add(view3);
+
+        mRefresher1.autoRefresh();
+        mRefresher2.autoRefresh();
     }
 
     @Override

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.google.gson.Gson;
 import com.hualing.rider.R;
+import com.hualing.rider.activities.MainActivity;
 import com.hualing.rider.activities.QianWangQuCanActivity;
 import com.hualing.rider.entity.DaiQuHuoEntity;
 import com.hualing.rider.global.GlobalData;
@@ -49,12 +50,12 @@ public class DaiQuHuoAdapter extends BaseAdapter {
         this.mData = mData;
     }
 
-    private Activity context;
+    private MainActivity context;
     private String loaclcity = null;
     private DecimalFormat decimalFormat=new DecimalFormat("0.0");
     public static int jiSuanPosition=0;
 
-    public DaiQuHuoAdapter(Activity context){
+    public DaiQuHuoAdapter(MainActivity context){
         this.context = context;
         mData = new ArrayList<DaiQuHuoEntity.DataBean>();
         dqhNodeList = new ArrayList<DaiQuHuoNode>();
@@ -102,18 +103,20 @@ public class DaiQuHuoAdapter extends BaseAdapter {
         for (int i = 0; i<dqdListSize; i++) {
             DaiQuHuoEntity.DataBean dataBean = dqdList.get(i);
             qhNode = new DaiQuHuoNode(this);
-            qhNode.setQhStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛尼莫"));
-            qhNode.setQhEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
+            qhNode.setQhStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "山东省青岛市黄岛区隐珠镇向阳岭路7号"));
+            qhNode.setQhEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getQhAddress()));
             qhNode.setOrderNumber(dataBean.getOrderNumber());
             //Log.e("qcNode111==",qcNode.getOrderNumber());
             dqhNodeList.add(qhNode);
 
             shNode = new DaiQuHuoNode(this);
-            shNode.setShStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
-            shNode.setShEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛远雄国际广场"));
+            shNode.setShStNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getQhAddress()));
+            shNode.setShEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "双珠路288号东方金石"));
             shNode.setOrderNumber(dataBean.getOrderNumber());
             //Log.e("qcNode222==",shNode.getOrderNumber()+"");
             dqhNodeList.add(shNode);
+            if(i==5)
+                break;
         }
     }
 
@@ -124,6 +127,10 @@ public class DaiQuHuoAdapter extends BaseAdapter {
             //Log.e("dqhNode==",dqhNode.getOrderNumber()+"");
             dqhNode.drivingSearch();
         }
+    }
+
+    public void showProgressDialog(){
+        context.hideProgressDialog();
     }
 
     @Override

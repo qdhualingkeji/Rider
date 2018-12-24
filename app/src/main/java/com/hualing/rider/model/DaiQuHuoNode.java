@@ -2,6 +2,8 @@ package com.hualing.rider.model;
 
 import android.util.Log;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.BikingRouteResult;
 import com.baidu.mapapi.search.route.DrivingRouteLine;
@@ -12,6 +14,7 @@ import com.baidu.mapapi.search.route.MassTransitRouteResult;
 import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
+import com.baidu.mapapi.search.route.SuggestAddrInfo;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.hualing.rider.adapter.DaiQuHuoAdapter;
@@ -74,6 +77,7 @@ public class DaiQuHuoNode implements OnGetRoutePlanResultListener {
     // 搜索相关
     RoutePlanSearch mSearch = null;
     private DaiQuHuoAdapter daiQuHuoAdapter;
+    private boolean haveCD=false;
 
     public DaiQuHuoNode(DaiQuHuoAdapter daiQuHuoAdapter){
         // 初始化搜索模块，注册事件监听
@@ -115,6 +119,49 @@ public class DaiQuHuoNode implements OnGetRoutePlanResultListener {
         if(DaiQuHuoAdapter.jiSuanPosition==daiQuHuoAdapter.getDqhNodeList().size()) {//当已计算出的数量等于适配器里集合的元素数量时，适配器再发出第二次通知，刷新出路程来
             daiQuHuoAdapter.notifyDataSetChanged();
             DaiQuHuoAdapter.jiSuanPosition = 0;//发出通知之后，把数量标志清零
+            //daiQuHuoAdapter.showProgressDialog();
+        }
+    }
+
+    private void rePosition(SuggestAddrInfo sai){
+        List<PoiInfo> startPoiInfo = sai.getSuggestStartNode();
+        //Log.e("startPoiInfo==",startPoiInfo+"");
+        if(startPoiInfo!=null){
+            //Log.e("ddddddddd",qcStNode+","+qcEnNode);
+            LatLng location = startPoiInfo.get(0).location;
+            if(qhStNode==null&&qhEnNode==null) {
+                //Log.e("scStNode:lat,long===",location.latitude+","+location.longitude);
+                shStNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
+            }
+            else {
+                //Log.e("qcStNode:lat,long===",location.latitude+","+location.longitude);
+                qhStNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
+            }
+        }
+        List<PoiInfo> endPoiInfo = sai.getSuggestEndNode();
+        //Log.e("endPoiInfo==",endPoiInfo+"");
+        if(endPoiInfo!=null){
+            //Log.e("ddddddddd111",scStNode+","+scEnNode);
+            LatLng location = endPoiInfo.get(0).location;
+            if(qhStNode==null&&qhEnNode==null) {
+                ///Log.e("scEnNode:lat,long===",location.latitude+","+location.longitude);
+                shEnNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
+            }
+            else {
+                //Log.e("qcEnNode:lat,long===",location.latitude+","+location.longitude);
+                qhEnNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
+            }
+        }
+
+        //Log.e("haveCD=======",""+haveCD);
+        if(!haveCD) {
+            if (shStNode != null && shEnNode != null) {
+                mSearch.drivingSearch((new DrivingRoutePlanOption()).from(shStNode).to(shEnNode));
+            } else {
+                //if(qcStNode!=null&&qcEnNode!=null)
+                //Log.e("44444444444",""+qcStNode);
+                mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qhStNode).to(qhEnNode));
+            }
         }
     }
 
@@ -135,6 +182,23 @@ public class DaiQuHuoNode implements OnGetRoutePlanResultListener {
 
     @Override
     public void onGetDrivingRouteResult(DrivingRouteResult result) {
+        if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+            //Log.e("jiSuanPosition===","1111111111");
+            //MyToast("抱歉，未找到结果");
+            SuggestAddrInfo sai = result.getSuggestAddrInfo();
+            rePosition(sai);
+            return;
+        }
+        if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
+            //Log.e("jiSuanPosition===","2222222222222");
+            //Log.e("DrivingRouteResult=","地址有歧义");
+            // 起终点或途经点地址有岐义，通过以下接口获取建议查询信息
+            SuggestAddrInfo sai = result.getSuggestAddrInfo();
+            //MyToast("地址有歧义");
+            rePosition(sai);
+            //Log.e("haveCD======",""+haveCD);
+            return;
+        }
         if (result.error == SearchResult.ERRORNO.NO_ERROR) {
             //nodeIndex = -1;
             //mBtnPre.setVisibility(View.VISIBLE);

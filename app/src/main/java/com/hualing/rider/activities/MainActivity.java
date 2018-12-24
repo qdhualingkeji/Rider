@@ -1,5 +1,6 @@
 package com.hualing.rider.activities;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -46,6 +47,7 @@ public class MainActivity extends BaseActivity {
     private MyPagerAdapter mPagerAdapter;
     private ArrayAdapter<String> stateAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
+    private Dialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initLogic() {
 
+        //showProgressDialog();
         getScreenSize();
 
         mToolBar.setTitle(getResources().getString(R.string.app_name));//设置Toolbar标题
@@ -112,6 +115,15 @@ public class MainActivity extends BaseActivity {
             }
         });
         mDot1.setSelected(true);
+    }
+
+    public void showProgressDialog(){
+        progressDialog = TheApplication.createLoadingDialog(this, "");
+        progressDialog.show();
+    }
+
+    public void hideProgressDialog(){
+        progressDialog.dismiss();
     }
 
     @OnClick({R.id.dot1,R.id.dot2,R.id.dot3})
