@@ -141,6 +141,7 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
 
         qcStNode = PlanNode.withCityNameAndPlaceName(loaclcity, "山东省青岛市黄岛区隐珠镇向阳岭路7号");
         qcEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, qcdAddressTV.getText().toString());
+        //qcEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, "双珠路288号东方金石");
         //qcStNode = PlanNode.withLocation(new LatLng(35.88425874859243,120.05011426610518));
         //qcEnNode = PlanNode.withLocation(new LatLng(35.87989416713656,120.05558494666093));
 
@@ -319,13 +320,13 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     @Override
     public void onGetDrivingRouteResult(DrivingRouteResult result) {
         if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-            //Log.e("DrivingRouteResult=","抱歉，未找到结果");
+            Log.e("DrivingRouteResult=","抱歉，未找到结果");
             SuggestAddrInfo sai = result.getSuggestAddrInfo();
             rePosition(sai);
             return;
         }
         if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
-            //Log.e("DrivingRouteResult=","地址有歧义");
+            Log.e("DrivingRouteResult=","地址有歧义");
             // 起终点或途经点地址有岐义，通过以下接口获取建议查询信息
             SuggestAddrInfo sai = result.getSuggestAddrInfo();
             //MyToast("地址有歧义");

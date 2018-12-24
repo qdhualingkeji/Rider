@@ -153,36 +153,38 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
 
     private void rePosition(SuggestAddrInfo sai){
         List<PoiInfo> startPoiInfo = sai.getSuggestStartNode();
+        //Log.e("startPoiInfo==",startPoiInfo+"");
         if(startPoiInfo!=null){
+            //Log.e("ddddddddd",qcStNode+","+qcEnNode);
             LatLng location = startPoiInfo.get(0).location;
-            Log.e("ddddddddd",qcStNode+","+qcEnNode);
             if(qcStNode==null&&qcEnNode==null) {
-                Log.e("scStNode:lat,long===",location.latitude+","+location.longitude);
+                //Log.e("scStNode:lat,long===",location.latitude+","+location.longitude);
                 scStNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
             }
             else {
-                Log.e("qcStNode:lat,long===",location.latitude+","+location.longitude);
+                //Log.e("qcStNode:lat,long===",location.latitude+","+location.longitude);
                 qcStNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
             }
         }
         List<PoiInfo> endPoiInfo = sai.getSuggestEndNode();
+        //Log.e("endPoiInfo==",endPoiInfo+"");
         if(endPoiInfo!=null){
+            //Log.e("ddddddddd111",scStNode+","+scEnNode);
             LatLng location = endPoiInfo.get(0).location;
-            Log.e("ddddddddd111",qcStNode+","+qcEnNode);
             if(qcStNode==null&&qcEnNode==null) {
-                Log.e("scEnNode:lat,long===",location.latitude+","+location.longitude);
+                ///Log.e("scEnNode:lat,long===",location.latitude+","+location.longitude);
                 scEnNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
             }
             else {
-                Log.e("qcEnNode:lat,long===",location.latitude+","+location.longitude);
+                //Log.e("qcEnNode:lat,long===",location.latitude+","+location.longitude);
                 qcEnNode = PlanNode.withLocation(new LatLng(location.latitude, location.longitude));
             }
         }
 
-        Log.e("haveCD=======",""+haveCD);
+        //Log.e("haveCD=======",""+haveCD);
         if(!haveCD) {
             if (scStNode != null && scEnNode != null) {
-                //mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
+                mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
             } else {
                 //if(qcStNode!=null&&qcEnNode!=null)
                 //Log.e("44444444444",""+qcStNode);
@@ -209,13 +211,12 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
     @Override
     public void onGetDrivingRouteResult(DrivingRouteResult result) {
         if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-            Log.e("jiSuanPosition===","1111111111");
+            //Log.e("jiSuanPosition===","1111111111");
             //MyToast("抱歉，未找到结果");
             SuggestAddrInfo sai = result.getSuggestAddrInfo();
             rePosition(sai);
             return;
         }
-        /*
         if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
             //Log.e("jiSuanPosition===","2222222222222");
             //Log.e("DrivingRouteResult=","地址有歧义");
@@ -223,10 +224,9 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
             SuggestAddrInfo sai = result.getSuggestAddrInfo();
             //MyToast("地址有歧义");
             rePosition(sai);
-            Log.e("haveCD======",""+haveCD);
+            //Log.e("haveCD======",""+haveCD);
             return;
         }
-        */
         if (result.error == SearchResult.ERRORNO.NO_ERROR) {
             //nodeIndex = -1;
             //mBtnPre.setVisibility(View.VISIBLE);
@@ -265,7 +265,7 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
             }
             initKm();
             haveCD=true;
-            Log.e("haveCD1111======",""+haveCD);
+            //Log.e("haveCD1111======",""+haveCD);
         }
     }
 
