@@ -92,5 +92,41 @@ public class DaiQiangDanEntity {
 		}
 
 		private float syTime;
+		private double qcLongitude;
+		private double qcLatitude;
+		private double scLongitude;
+		private double scLatitude;
+
+		public double getQcLongitude() {
+			return qcLongitude;
+		}
+
+		public void setQcLongitude(double qcLongitude) {
+			this.qcLongitude = qcLongitude;
+		}
+
+		public double getQcLatitude() {
+			return qcLatitude;
+		}
+
+		public void setQcLatitude(double qcLatitude) {
+			this.qcLatitude = qcLatitude;
+		}
+
+		public double getScLongitude() {
+			return scLongitude;
+		}
+
+		public void setScLongitude(double scLongitude) {
+			this.scLongitude = scLongitude;
+		}
+
+		public double getScLatitude() {
+			return scLatitude;
+		}
+
+		public void setScLatitude(double scLatitude) {
+			this.scLatitude = scLatitude;
+		}
 	}
 }

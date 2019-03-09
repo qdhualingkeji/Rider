@@ -112,12 +112,9 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
 
     public void drivingSearch(){
         if(qcStNode!=null&&qcEnNode!=null) {
-            Log.e("11111111111111","111111111111");
             mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qcStNode).to(qcEnNode));
         }
         else {
-            //if(scStNode!=null&&scEnNode!=null)
-            Log.e("222222222222","22222222222222");
             mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
         }
     }
@@ -252,15 +249,14 @@ public class DaiQiangDanNode implements OnGetRoutePlanResultListener {
             //overlay.addToMap();
             //overlay.zoomToSpan();
 
-            float durationFloat = (float) duration/1000;
-            //Log.e("durationFloat===",""+durationFloat);
+            //Log.e("duration===",""+duration);
             if(qcStNode==null&&qcEnNode==null){//说明是送餐点
                 //Log.e("setToScdjl===",""+durationFloat);
-                toScdjl = durationFloat;
+                toScdjl = duration;
             }
             else{
                 //Log.e("setToQcdjl===",""+durationFloat);
-                toQcdjl = durationFloat;
+                toQcdjl = duration;
                 syTime = (float)duration/1330;
             }
             initKm();

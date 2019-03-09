@@ -1,9 +1,5 @@
 package com.hualing.rider.adapter;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +7,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.google.gson.Gson;
 import com.hualing.rider.R;
@@ -20,6 +20,7 @@ import com.hualing.rider.entity.DaiQiangDanEntity;
 import com.hualing.rider.global.GlobalData;
 import com.hualing.rider.model.DaiQiangDanNode;
 import com.hualing.rider.util.IntentUtil;
+import com.hualing.rider.util.MyLocationListener;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -30,7 +31,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class DaiQiangDanAdapter extends BaseAdapter {
 
@@ -44,6 +44,8 @@ public class DaiQiangDanAdapter extends BaseAdapter {
 
     private List<DaiQiangDanEntity.DataBean> mData;
     private MainActivity context;
+    public LocationClient mLocationClient;
+    public BDLocationListener myListener;
     private DecimalFormat decimalFormat=new DecimalFormat("0.0");
     public static int jiSuanPosition=0;
 
@@ -63,6 +65,16 @@ public class DaiQiangDanAdapter extends BaseAdapter {
         this.context = context;
         mData = new ArrayList<DaiQiangDanEntity.DataBean>();
         dqdNodeList = new ArrayList<DaiQiangDanNode>();
+
+        /*
+        // 声明LocationClient类
+        mLocationClient = new LocationClient(context.getApplicationContext());
+        myListener = new MyLocationListener(mLocationClient);
+        // 注册监听
+        mLocationClient.registerLocationListener(myListener);
+
+        getLocation();
+        */
     }
 
     public void setNewData(){
@@ -97,6 +109,22 @@ public class DaiQiangDanAdapter extends BaseAdapter {
         });
     }
 
+    /** 获得所在位置经纬度及详细地址 */
+    public void getLocation() {
+        // 声明定位参数
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);// 设置定位模式 高精度
+        option.setCoorType("bd09ll");// 设置返回定位结果是百度经纬度 默认gcj02
+        option.setScanSpan(5000);// 设置发起定位请求的时间间隔 单位ms
+        option.setIsNeedAddress(true);// 设置定位结果包含地址信息
+        option.setNeedDeviceDirect(true);// 设置定位结果包含手机机头 的方向
+        // 设置定位参数
+        mLocationClient.setLocOption(option);
+        // 启动定位
+        mLocationClient.start();
+
+    }
+
     /**
      * 初始化待抢单地点
      */
@@ -107,21 +135,21 @@ public class DaiQiangDanAdapter extends BaseAdapter {
         for (int i = 0; i<dqdListSize; i++) {
             DaiQiangDanEntity.DataBean dataBean = dqdList.get(i);
             qcNode = new DaiQiangDanNode(this);
-            qcNode.setQcStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "山东省青岛市黄岛区隐珠镇向阳岭路7号"));
-            qcNode.setQcEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getQcAddress()));
-            //qcNode.setQcStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "山东省青岛市黄岛区隐珠镇向阳岭路77号"));
-            //qcNode.setQcEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛颐和国际"));
+            //qcNode.setQcStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "山东省青岛市黄岛区隐珠镇向阳岭路7号"));
+            //qcNode.setQcEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getQcAddress()));
+            qcNode.setQcStNode(PlanNode.withLocation(new LatLng(35.875561,120.048224)));
+            qcNode.setQcEnNode(PlanNode.withLocation(new LatLng(dataBean.getQcLatitude(),dataBean.getQcLongitude())));
             qcNode.setOrderNumber(dataBean.getOrderNumber());
             //Log.e("qcNode111==",qcNode.getOrderNumber());
             dqdNodeList.add(qcNode);
 
             scNode = new DaiQiangDanNode(this);
-            //Log.e("QcAddress==",dataBean.getQcAddress());
+            //Log.e("ScLongitude==",dataBean.getScLongitude()+"");
             //Log.e("ScAddress==",dataBean.getScAddress());
-            scNode.setScStNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getQcAddress()));
+            //scNode.setScStNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getQcAddress()));
             //scNode.setScEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getScAddress()));
-            //scNode.setScStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "青岛尼莫"));
-            scNode.setScEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "双珠路288号东方金石"));
+            scNode.setScStNode(PlanNode.withLocation(new LatLng(dataBean.getQcLatitude(),dataBean.getQcLongitude())));
+            scNode.setScEnNode(PlanNode.withLocation(new LatLng(dataBean.getScLatitude(),dataBean.getScLongitude())));
             //scNode.setScStNode(PlanNode.withLocation(new LatLng(35.88220442808485,120.04091561768301)));
             //scNode.setScEnNode(PlanNode.withLocation(new LatLng(35.88425874859243,120.05011426610518)));
             scNode.setOrderNumber(dataBean.getOrderNumber());
@@ -199,8 +227,30 @@ public class DaiQiangDanAdapter extends BaseAdapter {
         });
 
         holder.mSyTimeTV.setText("剩余"+decimalFormat.format((float)daiQiangDan.getSyTime())+"分钟");
-        holder.mToQcdjlTV.setText(decimalFormat.format(daiQiangDan.getToQcdjl()));
-        holder.mToScdjlTV.setText(decimalFormat.format(daiQiangDan.getToScdjl()));
+
+        float durationFloatQc = 0;
+        float durationQc = daiQiangDan.getToQcdjl();
+        if(durationQc>=1000) {
+            durationFloatQc = durationQc / 1000;
+            holder.mToQcddwTV.setText("km");
+        }
+        else {
+            durationFloatQc = durationQc;
+            holder.mToQcddwTV.setText("m");
+        }
+        holder.mToQcdjlTV.setText(decimalFormat.format(durationFloatQc));
+
+        float durationFloatSc = 0;
+        float durationSc = daiQiangDan.getToScdjl();
+        if(durationSc>=1000) {
+            durationFloatSc = durationSc / 1000;
+            holder.mToScddwTV.setText("km");
+        }
+        else {
+            durationFloatSc = durationSc;
+            holder.mToScddwTV.setText("m");
+        }
+        holder.mToScdjlTV.setText(decimalFormat.format(durationFloatSc));
         holder.mQcShopNameTV.setText(daiQiangDan.getQcShopName());
         holder.mQcAddressTV.setText(daiQiangDan.getQcAddress());
         holder.mScAddressTV.setText(daiQiangDan.getScAddress());
@@ -220,8 +270,12 @@ public class DaiQiangDanAdapter extends BaseAdapter {
         TextView mSyTimeTV;
         @BindView(R.id.to_qcdjl_tv)
         TextView mToQcdjlTV;
+        @BindView(R.id.to_qcddw_tv)
+        TextView mToQcddwTV;
         @BindView(R.id.to_scdjl_tv)
         TextView mToScdjlTV;
+        @BindView(R.id.to_scddw_tv)
+        TextView mToScddwTV;
         @BindView(R.id.qc_shop_name_tv)
         TextView mQcShopNameTV;
         @BindView(R.id.qc_address_tv)

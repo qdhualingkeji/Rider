@@ -152,13 +152,15 @@ public class MainActivity extends BaseActivity {
         //其次单独设置选中的
         switch (position) {
             case 0:
-                Log.e("position========",""+position);
+                Log.e("position1========",""+position);
                 mDot1.setSelected(true);
                 break;
             case 1:
+                Log.e("position2========",""+position);
                 mDot2.setSelected(true);
                 break;
             case 2:
+                Log.e("position3========",""+position);
                 mDot3.setSelected(true);
                 break;
         }

@@ -39,6 +39,7 @@ public class MyPagerAdapter extends PagerAdapter {
 
     public MyPagerAdapter(MainActivity mainActivity){
         views = new ArrayList<>();
+
         view1 = View.inflate(mainActivity, R.layout.banner_layout_one_pager,null);
         mListView1 = view1.findViewById(R.id.listView);
         mRefresher1 = view1.findViewById(R.id.refresher);

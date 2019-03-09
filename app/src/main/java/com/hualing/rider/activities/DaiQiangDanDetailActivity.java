@@ -118,6 +118,10 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     private boolean isFirstLoc = true; // 是否首次定位
     private DecimalFormat decimalFormat=new DecimalFormat("0.0");
     private float syTime;
+    private double qcLongitude;
+    private double qcLatitude;
+    private double scLongitude;
+    private double scLatitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,20 +139,20 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         mSearch.setOnGetRoutePlanResultListener(this);
 
         DaiQiangDanEntity.DataBean daiQiangDan = (DaiQiangDanEntity.DataBean) getIntent().getSerializableExtra("daiQiangDan");
+        qcLongitude=daiQiangDan.getQcLongitude();
+        qcLatitude=daiQiangDan.getQcLatitude();
         qcdNameTV.setText(daiQiangDan.getQcShopName());
         qcdAddressTV.setText(daiQiangDan.getQcAddress());
+        scLongitude=daiQiangDan.getScLongitude();
+        scLatitude=daiQiangDan.getScLatitude();
         scdAddressTV.setText(daiQiangDan.getScAddress());
 
-        qcStNode = PlanNode.withCityNameAndPlaceName(loaclcity, "山东省青岛市黄岛区隐珠镇向阳岭路7号");
-        qcEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, qcdAddressTV.getText().toString());
+        qcStNode = PlanNode.withLocation(new LatLng(35.875561,120.048224));
+        qcEnNode = PlanNode.withLocation(new LatLng(qcLatitude,qcLongitude));
         //qcEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, "双珠路288号东方金石");
-        //qcStNode = PlanNode.withLocation(new LatLng(35.88425874859243,120.05011426610518));
-        //qcEnNode = PlanNode.withLocation(new LatLng(35.87989416713656,120.05558494666093));
 
-        scStNode = PlanNode.withCityNameAndPlaceName(loaclcity, qcdAddressTV.getText().toString());
-        scEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, scdAddressTV.getText().toString());
-        //scStNode = PlanNode.withLocation(new LatLng(35.88220442808485,120.04091561768301));
-        //scEnNode = PlanNode.withLocation(new LatLng(35.88425874859243,120.05011426610518));
+        scStNode = PlanNode.withLocation(new LatLng(qcLatitude,qcLongitude));
+        scEnNode = PlanNode.withLocation(new LatLng(scLatitude,scLongitude));
 
         AssetManager assetManager = getAssets();
         try {
