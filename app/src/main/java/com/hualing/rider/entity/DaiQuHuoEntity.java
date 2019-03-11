@@ -108,5 +108,41 @@ public class DaiQuHuoEntity {
         public void setShSyTime(float shSyTime) {
             this.shSyTime = shSyTime;
         }
+        private double qhLongitude;
+        private double qhLatitude;
+        private double shLongitude;
+        private double shLatitude;
+
+        public double getQhLongitude() {
+            return qhLongitude;
+        }
+
+        public void setQhLongitude(double qhLongitude) {
+            this.qhLongitude = qhLongitude;
+        }
+
+        public double getQhLatitude() {
+            return qhLatitude;
+        }
+
+        public void setQhLatitude(double qhLatitude) {
+            this.qhLatitude = qhLatitude;
+        }
+
+        public double getShLongitude() {
+            return shLongitude;
+        }
+
+        public void setShLongitude(double shLongitude) {
+            this.shLongitude = shLongitude;
+        }
+
+        public double getShLatitude() {
+            return shLatitude;
+        }
+
+        public void setShLatitude(double shLatitude) {
+            this.shLatitude = shLatitude;
+        }
     }
 }

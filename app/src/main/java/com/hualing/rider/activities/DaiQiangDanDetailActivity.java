@@ -82,6 +82,8 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     TextView syTimeTV;
     @BindView(R.id.to_qcdjl_tv)
     TextView toQcdjlTV;
+    @BindView(R.id.to_qcddw_tv)
+    TextView toQcddwTV;
     @BindView(R.id.sum_price_tv)
     TextView sumPriceTV;
     @BindView(R.id.sum_quantity_tv)
@@ -150,6 +152,8 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         qcStNode = PlanNode.withLocation(new LatLng(35.875561,120.048224));
         qcEnNode = PlanNode.withLocation(new LatLng(qcLatitude,qcLongitude));
         //qcEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, "双珠路288号东方金石");
+        //Log.e("qcLatitude===",""+qcLatitude);
+        //Log.e("qcLongitude===",""+qcLongitude);
 
         scStNode = PlanNode.withLocation(new LatLng(qcLatitude,qcLongitude));
         scEnNode = PlanNode.withLocation(new LatLng(scLatitude,scLongitude));
@@ -369,7 +373,15 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
             else {
                 int duration = routeLine.getDistance();
                 syTime = (float)duration/1330;
-                float durationFloat = (float) duration/1000;
+                float durationFloat = 0;
+                if(duration>=1000) {
+                    durationFloat = duration / 1000;
+                    toQcddwTV.setText("km");
+                }
+                else {
+                    durationFloat = duration;
+                    toQcddwTV.setText("m");
+                }
                 toQcdjlTV.setText(decimalFormat.format(durationFloat));
                 syTimeTV.setText("剩余"+decimalFormat.format((float)syTime)+"分钟");
                 haveQCD=true;

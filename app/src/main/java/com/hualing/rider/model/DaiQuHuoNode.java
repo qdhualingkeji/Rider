@@ -224,16 +224,15 @@ public class DaiQuHuoNode implements OnGetRoutePlanResultListener {
             //overlay.addToMap();
             //overlay.zoomToSpan();
 
-            float durationFloat = (float) duration/1000;
             //Log.e("durationFloat===",""+durationFloat);
             if(qhStNode==null&&qhEnNode==null){//说明是送货点
                 //Log.e("setToScdjl===",""+durationFloat);
-                toShdjl = durationFloat;
+                toShdjl = duration;
                 shSyTime = (float)duration/1330;
             }
             else{
                 //Log.e("setToQcdjl===",""+durationFloat);
-                toQhdjl = durationFloat;
+                toQhdjl = duration;
                 qhSyTime = (float)duration/1330;
             }
             //Log.e("toShdjl===",""+toShdjl);

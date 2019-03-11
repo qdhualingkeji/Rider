@@ -48,6 +48,10 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
     TextView qhAddressTV;
     @BindView(R.id.sh_address_tv)
     TextView shAddressTV;
+    @BindView(R.id.to_qhdjl_tv)
+    TextView toQhdjlTV;
+    @BindView(R.id.to_shdjl_tv)
+    TextView toShdjlTV;
     // 地图控件
     @BindView(R.id.baiduMapView)
     TextureMapView mMapView;
@@ -88,11 +92,11 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
         mSearch = RoutePlanSearch.newInstance();
         mSearch.setOnGetRoutePlanResultListener(this);
 
-        qhStNode = PlanNode.withCityNameAndPlaceName(loaclcity, "青岛尼莫");
-        qhEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, qhAddressTV.getText().toString());
+        qhStNode = PlanNode.withLocation(new LatLng(35.875561,120.048224));
+        qhEnNode = PlanNode.withLocation(new LatLng(daiQuHuo.getQhLatitude(),daiQuHuo.getQhLongitude()));
 
-        shStNode = PlanNode.withCityNameAndPlaceName(loaclcity, qhAddressTV.getText().toString());
-        shEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, shAddressTV.getText().toString());
+        shStNode = PlanNode.withLocation(new LatLng(daiQuHuo.getQhLatitude(),daiQuHuo.getQhLongitude()));
+        shEnNode = PlanNode.withLocation(new LatLng(daiQuHuo.getShLatitude(),daiQuHuo.getShLongitude()));
     }
 
     private void initMap(){
@@ -190,8 +194,26 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
             mBaidumap.setOnMarkerClickListener(overlay);
             routeOverlay = overlay;
             overlay.setData(result.getRouteLines().get(0));
-            if(isSongCan)
-                overlay.setSongCan(isSongCan);
+
+            overlay.setSongCan(isSongCan);
+            int duration = route.getDistance();
+            String durationStr;
+            float durationFloat = 0;
+            if(duration>=1000) {
+                durationFloat = duration / 1000;
+                durationStr=String.format("%.2fkm",durationFloat);
+            }
+            else {
+                durationFloat = duration;
+                durationStr=String.format("%.2fm",durationFloat);
+            }
+
+            if(isSongCan) {
+                toQhdjlTV.setText(durationStr);
+            }
+            else{
+                toShdjlTV.setText(durationStr);
+            }
             isSongCan=true;
             overlay.addToMap();
             overlay.zoomToSpan();

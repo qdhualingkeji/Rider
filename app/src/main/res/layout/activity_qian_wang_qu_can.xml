@@ -28,6 +28,7 @@
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/to_qhdjl_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0.3km"
@@ -73,6 +74,7 @@
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/to_shdjl_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="3.1km"

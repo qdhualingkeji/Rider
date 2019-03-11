@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.google.gson.Gson;
 import com.hualing.rider.R;
@@ -103,17 +104,15 @@ public class DaiQuHuoAdapter extends BaseAdapter {
         for (int i = 0; i<dqdListSize; i++) {
             DaiQuHuoEntity.DataBean dataBean = dqdList.get(i);
             qhNode = new DaiQuHuoNode(this);
-            qhNode.setQhStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "山东省青岛市黄岛区隐珠镇向阳岭路7号"));
-            qhNode.setQhEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getQhAddress()));
+            qhNode.setQhStNode(PlanNode.withLocation(new LatLng(35.875561,120.048224)));
+            qhNode.setQhEnNode(PlanNode.withLocation(new LatLng(dataBean.getQhLatitude(),dataBean.getQhLongitude())));
             qhNode.setOrderNumber(dataBean.getOrderNumber());
-            //Log.e("qcNode111==",qcNode.getOrderNumber());
             dqhNodeList.add(qhNode);
 
             shNode = new DaiQuHuoNode(this);
-            shNode.setShStNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getQhAddress()));
-            shNode.setShEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, "双珠路288号东方金石"));
+            shNode.setShStNode(PlanNode.withLocation(new LatLng(dataBean.getQhLatitude(),dataBean.getQhLongitude())));
+            shNode.setShEnNode(PlanNode.withLocation(new LatLng(dataBean.getShLatitude(),dataBean.getShLongitude())));
             shNode.setOrderNumber(dataBean.getOrderNumber());
-            //Log.e("qcNode222==",shNode.getOrderNumber()+"");
             dqhNodeList.add(shNode);
             if(i==5)
                 break;
@@ -163,8 +162,29 @@ public class DaiQuHuoAdapter extends BaseAdapter {
         final DaiQuHuoEntity.DataBean dataBean = mData.get(position);
         holder.mSyTimeTV.setText(decimalFormat.format((float)(dataBean.getQhSyTime()+dataBean.getShSyTime()))+"分钟内送达");
         holder.mPriceTV.setText("￥"+dataBean.getPrice());
-        holder.mToQhdjlTV.setText(decimalFormat.format(dataBean.getToQhdjl()));
-        holder.mToShdjlTV.setText(decimalFormat.format(dataBean.getToShdjl()));
+
+        float durationFloatQh = 0;
+        float durationQh = dataBean.getToQhdjl();
+        if(durationQh>=1000) {
+            durationFloatQh = durationQh / 1000;
+            holder.mToQhdjlTV.setText(decimalFormat.format(durationFloatQh)+"km");
+        }
+        else {
+            durationFloatQh = durationQh;
+            holder.mToQhdjlTV.setText(decimalFormat.format(durationFloatQh)+"m");
+        }
+
+        float durationFloatSh = 0;
+        float durationSh = dataBean.getToShdjl();
+        if(durationSh>=1000) {
+            durationFloatSh = durationSh / 1000;
+            holder.mToShdjlTV.setText(decimalFormat.format(durationFloatSh)+"km");
+        }
+        else {
+            durationFloatSh = durationSh;
+            holder.mToShdjlTV.setText(decimalFormat.format(durationFloatSh)+"m");
+        }
+
         holder.mQhAddressTV.setText(dataBean.getQhAddress());
         holder.mShAddressTV.setText(dataBean.getShAddress());
         holder.mQwqcBtn.setOnClickListener(new View.OnClickListener() {
