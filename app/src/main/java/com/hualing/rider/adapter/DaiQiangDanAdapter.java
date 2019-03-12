@@ -46,7 +46,6 @@ public class DaiQiangDanAdapter extends BaseAdapter {
     private MainActivity context;
     public LocationClient mLocationClient;
     public BDLocationListener myListener;
-    private DecimalFormat decimalFormat=new DecimalFormat("0.0");
     public static int jiSuanPosition=0;
 
     public List<DaiQiangDanNode> getDqdNodeList() {
@@ -226,7 +225,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
             }
         });
 
-        holder.mSyTimeTV.setText("剩余"+decimalFormat.format((float)daiQiangDan.getSyTime())+"分钟");
+        holder.mSyTimeTV.setText("剩余"+String.format("%.2f",daiQiangDan.getSyTime())+"分钟");
 
         float durationFloatQc = 0;
         float durationQc = daiQiangDan.getToQcdjl();
@@ -238,7 +237,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
             durationFloatQc = durationQc;
             holder.mToQcddwTV.setText("m");
         }
-        holder.mToQcdjlTV.setText(decimalFormat.format(durationFloatQc));
+        holder.mToQcdjlTV.setText(String.format("%.2f",durationFloatQc));
 
         float durationFloatSc = 0;
         float durationSc = daiQiangDan.getToScdjl();
@@ -250,7 +249,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
             durationFloatSc = durationSc;
             holder.mToScddwTV.setText("m");
         }
-        holder.mToScdjlTV.setText(decimalFormat.format(durationFloatSc));
+        holder.mToScdjlTV.setText(String.format("%.2f",durationFloatSc));
         holder.mQcShopNameTV.setText(daiQiangDan.getQcShopName());
         holder.mQcAddressTV.setText(daiQiangDan.getQcAddress());
         holder.mScAddressTV.setText(daiQiangDan.getScAddress());

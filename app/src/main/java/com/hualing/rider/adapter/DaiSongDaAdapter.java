@@ -1,7 +1,5 @@
 package com.hualing.rider.adapter;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
@@ -14,11 +12,9 @@ import com.baidu.mapapi.search.route.PlanNode;
 import com.google.gson.Gson;
 import com.hualing.rider.R;
 import com.hualing.rider.activities.MainActivity;
-import com.hualing.rider.activities.QianWangQuCanActivity;
-import com.hualing.rider.entity.DaiQuHuoEntity;
+import com.hualing.rider.entity.DaiSongDaEntity;
 import com.hualing.rider.global.GlobalData;
-import com.hualing.rider.model.DaiQuHuoNode;
-import com.hualing.rider.util.IntentUtil;
+import com.hualing.rider.model.DaiSongDaNode;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -30,36 +26,36 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DaiQuHuoAdapter extends BaseAdapter {
+public class DaiSongDaAdapter extends BaseAdapter {
 
-    private List<DaiQuHuoEntity.DataBean> mData;
-    private List<DaiQuHuoNode> dqhNodeList;
+    private List<DaiSongDaEntity.DataBean> mData;
+    private List<DaiSongDaNode> dsdNodeList;
 
-    public List<DaiQuHuoNode> getDqhNodeList() {
-        return dqhNodeList;
-    }
-
-    public void setDqhNodeList(List<DaiQuHuoNode> dqhNodeList) {
-        this.dqhNodeList = dqhNodeList;
-    }
-
-    public List<DaiQuHuoEntity.DataBean> getmData() {
+    public List<DaiSongDaEntity.DataBean> getmData() {
         return mData;
     }
 
-    public void setmData(List<DaiQuHuoEntity.DataBean> mData) {
+    public void setmData(List<DaiSongDaEntity.DataBean> mData) {
         this.mData = mData;
     }
 
+    public List<DaiSongDaNode> getDsdNodeList() {
+        return dsdNodeList;
+    }
+
+    public void setDsdNodeList(List<DaiSongDaNode> dsdNodeList) {
+        this.dsdNodeList = dsdNodeList;
+    }
+
     private MainActivity context;
-    private String loaclcity = null;
     public static int jiSuanPosition=0;
 
-    public DaiQuHuoAdapter(MainActivity context){
+    public DaiSongDaAdapter(MainActivity context){
         this.context = context;
-        mData = new ArrayList<DaiQuHuoEntity.DataBean>();
-        dqhNodeList = new ArrayList<DaiQuHuoNode>();
+        mData = new ArrayList<DaiSongDaEntity.DataBean>();
+        dsdNodeList = new ArrayList<DaiSongDaNode>();
     }
+
 
     public void setNewData(){
 
@@ -82,46 +78,46 @@ public class DaiQuHuoAdapter extends BaseAdapter {
                 Log.e("rawJsonResponse======",""+rawJsonResponse);
 
                 Gson gson = new Gson();
-                DaiQuHuoEntity daiQuHuoEntity = gson.fromJson(rawJsonResponse, DaiQuHuoEntity.class);
-                if (daiQuHuoEntity.getCode() == 100) {
-                    mData = daiQuHuoEntity.getData();
+                DaiSongDaEntity daiSongDaEntity = gson.fromJson(rawJsonResponse, DaiSongDaEntity.class);
+                if (daiSongDaEntity.getCode() == 100) {
+                    mData = daiSongDaEntity.getData();
                     notifyDataSetChanged();
-                    initDaiQuHuoNode(mData);
-                    jiSuanDaiQiangDanKm();
+                    initDaiSongDaNode(mData);
+                    jiSuanDaiSongDaKm();
                 }
             }
         });
     }
 
     /**
-     * 初始化待抢单地点
+     * 初始化待送达地点
      */
-    public void initDaiQuHuoNode(List<DaiQuHuoEntity.DataBean> dqdList){
-        DaiQuHuoNode qhNode = null;
-        DaiQuHuoNode shNode = null;
-        int dqdListSize = dqdList.size();
-        for (int i = 0; i<dqdListSize; i++) {
-            DaiQuHuoEntity.DataBean dataBean = dqdList.get(i);
-            qhNode = new DaiQuHuoNode(this);
+    public void initDaiSongDaNode(List<DaiSongDaEntity.DataBean> dsdList){
+        DaiSongDaNode qhNode = null;
+        DaiSongDaNode shNode = null;
+        int dsdListSize = dsdList.size();
+        for (int i = 0; i<dsdListSize; i++) {
+            DaiSongDaEntity.DataBean dataBean = dsdList.get(i);
+            qhNode = new DaiSongDaNode(this);
             qhNode.setQhStNode(PlanNode.withLocation(new LatLng(35.875561,120.048224)));
             qhNode.setQhEnNode(PlanNode.withLocation(new LatLng(dataBean.getQhLatitude(),dataBean.getQhLongitude())));
             qhNode.setOrderNumber(dataBean.getOrderNumber());
-            dqhNodeList.add(qhNode);
+            dsdNodeList.add(qhNode);
 
-            shNode = new DaiQuHuoNode(this);
+            shNode = new DaiSongDaNode(this);
             shNode.setShStNode(PlanNode.withLocation(new LatLng(dataBean.getQhLatitude(),dataBean.getQhLongitude())));
             shNode.setShEnNode(PlanNode.withLocation(new LatLng(dataBean.getShLatitude(),dataBean.getShLongitude())));
             shNode.setOrderNumber(dataBean.getOrderNumber());
-            dqhNodeList.add(shNode);
+            dsdNodeList.add(shNode);
             if(i==5)
                 break;
         }
     }
 
-    public void jiSuanDaiQiangDanKm(){
-        int dqdSize = dqhNodeList.size();
-        for (int i = 0;i<dqdSize; i++) {
-            DaiQuHuoNode dqhNode = dqhNodeList.get(i);
+    public void jiSuanDaiSongDaKm(){
+        int dsdSize = dsdNodeList.size();
+        for (int i = 0;i<dsdSize; i++) {
+            DaiSongDaNode dqhNode = dsdNodeList.get(i);
             //Log.e("dqhNode==",dqhNode.getOrderNumber()+"");
             dqhNode.drivingSearch();
         }
@@ -150,7 +146,7 @@ public class DaiQuHuoAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         if(convertView==null){
-            convertView = context.getLayoutInflater().inflate(R.layout.item_dai_qu_huo,parent,false);
+            convertView = context.getLayoutInflater().inflate(R.layout.item_dai_song_da,parent,false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         }
@@ -158,9 +154,8 @@ public class DaiQuHuoAdapter extends BaseAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
 
-        final DaiQuHuoEntity.DataBean dataBean = mData.get(position);
-        float syTime = dataBean.getQhSyTime() + dataBean.getShSyTime();
-        holder.mSyTimeTV.setText(String.format("%.2f",syTime)+"分钟内送达");
+        final DaiSongDaEntity.DataBean dataBean = mData.get(position);
+        holder.mSyTimeTV.setText(String.format("%.2f",(dataBean.getQhSyTime()+dataBean.getShSyTime()))+"分钟内送达");
         holder.mPriceTV.setText("￥"+dataBean.getPrice());
 
         float durationFloatQh = 0;
@@ -190,17 +185,11 @@ public class DaiQuHuoAdapter extends BaseAdapter {
         holder.mQwqcBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goQWQC(dataBean);
+                //goQWQC(dataBean);
             }
         });
 
         return convertView;
-    }
-
-    private void goQWQC(DaiQuHuoEntity.DataBean daiQuHuo){
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("daiQuHuo",daiQuHuo);
-        IntentUtil.openActivityForResult(context, QianWangQuCanActivity.class,-1,bundle);
     }
 
     class ViewHolder {
