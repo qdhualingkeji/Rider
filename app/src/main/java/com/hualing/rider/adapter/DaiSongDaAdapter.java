@@ -49,6 +49,24 @@ public class DaiSongDaAdapter extends BaseAdapter {
 
     private MainActivity context;
     public static int jiSuanPosition=0;
+    private double longitude;
+    private double latitude;
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
 
     public DaiSongDaAdapter(MainActivity context){
         this.context = context;
@@ -99,7 +117,7 @@ public class DaiSongDaAdapter extends BaseAdapter {
         for (int i = 0; i<dsdListSize; i++) {
             DaiSongDaEntity.DataBean dataBean = dsdList.get(i);
             qhNode = new DaiSongDaNode(this);
-            qhNode.setQhStNode(PlanNode.withLocation(new LatLng(35.875561,120.048224)));
+            qhNode.setQhStNode(PlanNode.withLocation(new LatLng(latitude,longitude)));
             qhNode.setQhEnNode(PlanNode.withLocation(new LatLng(dataBean.getQhLatitude(),dataBean.getQhLongitude())));
             qhNode.setOrderNumber(dataBean.getOrderNumber());
             dsdNodeList.add(qhNode);

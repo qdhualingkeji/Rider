@@ -16,7 +16,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.TextureMapView;
 import com.hualing.rider.R;
 import com.hualing.rider.adapter.MyPagerAdapter;
 import com.hualing.rider.global.TheApplication;
@@ -29,6 +36,16 @@ import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 
+    // 地图控件
+    @BindView(R.id.baiduMapView)
+    TextureMapView mMapView;
+    BaiduMap mBaidumap;
+    // 定位相关
+    LocationClient mLocClient;
+    public MyLocationListenner myListener = new MyLocationListenner();
+    private double longitude;
+    private double latitude;
+    private boolean initedAdapter=false;
     @BindView(R.id.drawerLayout)
     DrawerLayout mDrawerLayout;
     @BindView(R.id.toolBar)
@@ -56,7 +73,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initLogic() {
-
+        initMap();
         //showProgressDialog();
         getScreenSize();
 
@@ -97,8 +114,113 @@ public class MainActivity extends BaseActivity {
         stateAdapter=new ArrayAdapter<String>(this,R.layout.item_state,stateList);
         stateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mStateSpinner.setAdapter(stateAdapter);
+    }
 
-        mPagerAdapter = new MyPagerAdapter(MainActivity.this);
+    private void initMap(){
+        // 地图初始化
+        mBaidumap = mMapView.getMap();
+        // 开启定位图层
+        mBaidumap.setMyLocationEnabled(true);
+        // 定位初始化
+        mLocClient = new LocationClient(this);
+        mLocClient.registerLocationListener(myListener);
+        LocationClientOption option = new LocationClientOption();
+        option.setOpenGps(true); // 打开gps
+        option.setCoorType("bd09ll"); // 设置坐标类型
+        option.setScanSpan(1000);
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        // 可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+        option.setIsNeedAddress(true);// 可选，设置是否需要地址信息，默认不需要
+        // 设置是否需要返回位置语义化信息，可以在BDLocation.getLocationDescribe()中得到数据，ex:"在天安门附近"，
+        // 可以用作地址信息的补充
+        option.setIsNeedLocationDescribe(true);
+        option.setIsNeedLocationPoiList(true);// 可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+        /**
+         * 设置定位模式 Battery_Saving 低功耗模式 Device_Sensors 仅设备(Gps)模式 Hight_Accuracy
+         * 高精度模式
+         /   */
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        // 设置是否打开gps进行定位
+        option.setOpenGps(true);
+        // 设置扫描间隔，单位是毫秒 当<1000(1s)时，定时定位无效
+        option.setScanSpan(1000);
+        mLocClient.setLocOption(option);
+        mLocClient.start();
+    }
+
+    /**
+     * 定位SDK监听函数
+     */
+    public class MyLocationListenner implements BDLocationListener {
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            // map view 销毁后不在处理新接收的位置
+            if (location == null || mMapView == null) {
+                return;
+            }
+            //Log.e("++++++++",""+(longitude));
+            if(longitude==0||latitude==0) {
+                longitude=location.getLongitude();
+                latitude=location.getLatitude();
+                //Log.e("Lat===", "" + longitude + "," + latitude);
+
+                MyLocationData locData = new MyLocationData.Builder().accuracy(location.getRadius())
+                        // 此处设置开发者获取到的方向信息，顺时针0-360
+                        .direction(100).latitude(location.getLatitude()).longitude(location.getLongitude()).build();
+                mBaidumap.setMyLocationData(locData);
+                //Log.e("33333333","3333333333");
+            }
+            else{
+                if(!initedAdapter) {
+                    initMyPagerAdapter();
+                    initedAdapter=true;
+                }
+            }
+            /*
+            if (isFirstLoc) {
+                isFirstLoc = false;
+                LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
+                MapStatus.Builder builder = new MapStatus.Builder();
+                builder.target(ll).zoom(18.0f);
+                mBaidumap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+                //start_edit.setText(location.getAddrStr());
+                //MyToast("当前所在位置：" + location.getAddrStr());
+                //driver_city.setText(location.getCity());
+                loaclcity = location.getCity();
+
+                MyToast("========"+location.getLocType());
+                if (location.getLocType() == BDLocation.TypeGpsLocation) {
+                    // GPS定位结果
+                    Toast.makeText(DaiQiangDanDetailActivity.this, location.getAddrStr(), Toast.LENGTH_SHORT).show();
+                }
+                else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
+                    // 网络定位结果
+                    Toast.makeText(DaiQiangDanDetailActivity.this, location.getAddrStr(), Toast.LENGTH_SHORT).show();
+                }
+                else if (location.getLocType() == BDLocation.TypeOffLineLocation) {
+                    // 离线定位结果
+                    Toast.makeText(DaiQiangDanDetailActivity.this, location.getAddrStr(), Toast.LENGTH_SHORT).show();
+                }
+                else if (location.getLocType() == BDLocation.TypeServerError) {
+                    Toast.makeText(DaiQiangDanDetailActivity.this, "服务器错误，请检查", Toast.LENGTH_SHORT).show();
+                }
+                else if (location.getLocType() == BDLocation.TypeNetWorkException) {
+                    Toast.makeText(DaiQiangDanDetailActivity.this, "网络错误，请检查", Toast.LENGTH_SHORT).show();
+                }
+                else if (location.getLocType() == BDLocation.TypeCriteriaException) {
+                    Toast.makeText(DaiQiangDanDetailActivity.this, "手机模式错误，请检查是否飞行", Toast.LENGTH_SHORT).show();
+                }
+            }
+            */
+        }
+
+        public void onReceivePoi(BDLocation poiLocation) {
+
+        }
+    }
+
+    public void initMyPagerAdapter(){
+        mPagerAdapter = new MyPagerAdapter(MainActivity.this,longitude,latitude);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

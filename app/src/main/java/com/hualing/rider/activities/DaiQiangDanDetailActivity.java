@@ -108,7 +108,6 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     private boolean isDrived=false;
     private DQDProductAdapter dqdProductAdapter;
     private boolean isFirstLoc = true; // 是否首次定位
-    private DecimalFormat decimalFormat=new DecimalFormat("0.0");
     private float syTime;
     private double longitude;
     private double latitude;
@@ -379,8 +378,8 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
                     durationFloat = duration;
                     toQcddwTV.setText("m");
                 }
-                toQcdjlTV.setText(decimalFormat.format(durationFloat));
-                syTimeTV.setText("剩余"+decimalFormat.format((float)syTime)+"分钟");
+                toQcdjlTV.setText(String.format("%.2f",durationFloat));
+                syTimeTV.setText("剩余"+String.format("%.2f",syTime)+"分钟");
                 haveQCD=true;
             }
             isSongCan=true;

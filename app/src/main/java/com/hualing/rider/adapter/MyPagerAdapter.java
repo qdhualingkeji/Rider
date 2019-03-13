@@ -38,8 +38,29 @@ public class MyPagerAdapter extends PagerAdapter {
     private DaiQiangDanAdapter mAdapter1;
     private DaiQuHuoAdapter mAdapter2;
     private DaiSongDaAdapter mAdapter3;
+    private double longitude;
+    private double latitude;
 
-    public MyPagerAdapter(MainActivity mainActivity){
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public MyPagerAdapter(MainActivity mainActivity,double longitude,double latitude){
+        this.longitude=longitude;
+        this.latitude=latitude;
+
         views = new ArrayList<>();
 
         view1 = View.inflate(mainActivity, R.layout.banner_layout_one_pager,null);
@@ -48,6 +69,8 @@ public class MyPagerAdapter extends PagerAdapter {
 
         mRefresher1.setOnRefreshListener(new MyListener());
         mAdapter1 = new DaiQiangDanAdapter(mainActivity);
+        mAdapter1.setLongitude(longitude);
+        mAdapter1.setLatitude(latitude);
         mAdapter1.setNewData();
         mListView1.setAdapter(mAdapter1);
         views.add(view1);
@@ -59,6 +82,8 @@ public class MyPagerAdapter extends PagerAdapter {
 
         mRefresher2.setOnRefreshListener(new MyListener());
         mAdapter2 = new DaiQuHuoAdapter(mainActivity);
+        mAdapter2.setLongitude(longitude);
+        mAdapter2.setLatitude(latitude);
         mAdapter2.setNewData();
         mListView2.setAdapter(mAdapter2);
         views.add(view2);
@@ -70,6 +95,8 @@ public class MyPagerAdapter extends PagerAdapter {
 
         mRefresher3.setOnRefreshListener(new MyListener());
         mAdapter3 = new DaiSongDaAdapter(mainActivity);
+        mAdapter3.setLongitude(longitude);
+        mAdapter3.setLatitude(latitude);
         mAdapter3.setNewData();
         mListView3.setAdapter(mAdapter3);
         views.add(view3);

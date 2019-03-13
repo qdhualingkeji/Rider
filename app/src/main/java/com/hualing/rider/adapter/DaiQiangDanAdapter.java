@@ -20,12 +20,10 @@ import com.hualing.rider.entity.DaiQiangDanEntity;
 import com.hualing.rider.global.GlobalData;
 import com.hualing.rider.model.DaiQiangDanNode;
 import com.hualing.rider.util.IntentUtil;
-import com.hualing.rider.util.MyLocationListener;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +45,24 @@ public class DaiQiangDanAdapter extends BaseAdapter {
     public LocationClient mLocationClient;
     public BDLocationListener myListener;
     public static int jiSuanPosition=0;
+    private double longitude;
+    private double latitude;
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
 
     public List<DaiQiangDanNode> getDqdNodeList() {
         return dqdNodeList;
@@ -136,7 +152,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
             qcNode = new DaiQiangDanNode(this);
             //qcNode.setQcStNode(PlanNode.withCityNameAndPlaceName(loaclcity, "山东省青岛市黄岛区隐珠镇向阳岭路7号"));
             //qcNode.setQcEnNode(PlanNode.withCityNameAndPlaceName(loaclcity, dataBean.getQcAddress()));
-            qcNode.setQcStNode(PlanNode.withLocation(new LatLng(35.875561,120.048224)));
+            qcNode.setQcStNode(PlanNode.withLocation(new LatLng(latitude,longitude)));
             qcNode.setQcEnNode(PlanNode.withLocation(new LatLng(dataBean.getQcLatitude(),dataBean.getQcLongitude())));
             qcNode.setOrderNumber(dataBean.getOrderNumber());
             //Log.e("qcNode111==",qcNode.getOrderNumber());
