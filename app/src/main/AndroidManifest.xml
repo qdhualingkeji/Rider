@@ -3,10 +3,13 @@
     package="com.hualing.rider">
 
     <!-- ****************一般权限，6.0以上系统不需要额外申请****************** -->
+    <permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
     <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_GPS" />
     <!-- 获取运营商信息，用于支持提供运营商信息相关的接口 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- 访问网络，网络定位需要上网 -->
@@ -28,6 +31,10 @@
     <!-- 地图所需权限 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
@@ -41,12 +48,20 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="C0sGP1z0tQFNXb37KxFFEd7fFxN2d9tc" />
+            android:value="IoCgdrXYaoDMdye6peRix1YMcxwbRWYc" />
+        <!--
+        android:value="C0sGP1z0tQFNXb37KxFFEd7fFxN2d9tc" />
+        -->
 
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote" />
+            android:process=":remote" >
+            <intent-filter>
+                <action android:name="com.baidu.location.service_v2.2" >
+                </action>
+            </intent-filter>
+        </service>
 
         <activity android:name=".activities.MainActivity">
             <intent-filter>
@@ -96,7 +111,8 @@
             -->
         </activity>
         <activity android:name=".activities.DaiQiangDanDetailActivity" />
-        <activity android:name=".activities.QianWangQuCanActivity"></activity>
+        <activity android:name=".activities.QianWangQuCanActivity" />
+        <activity android:name=".activities.DaiSongDaMapActivity"></activity>
     </application>
 
 </manifest>

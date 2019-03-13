@@ -1,18 +1,14 @@
 package com.hualing.rider.activities;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,15 +18,10 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BitmapDescriptor;
-import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapPoi;
-import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.search.core.CityInfo;
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.RouteLine;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -48,10 +39,8 @@ import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.hualing.rider.R;
 import com.hualing.rider.adapter.DQDProductAdapter;
-import com.hualing.rider.baiduMap.DriverMenuActivity;
 import com.hualing.rider.entity.DaiQiangDanDetailEntity;
 import com.hualing.rider.entity.DaiQiangDanEntity;
-import com.hualing.rider.overlayutil.DrivingRouteOverlay;
 import com.hualing.rider.overlayutil.MyDrivingRouteOverlay;
 import com.hualing.rider.overlayutil.OverlayManager;
 
@@ -116,10 +105,13 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     private boolean isRpSongCan=false;
     private boolean haveSCD=false;
     private boolean haveQCD=false;
+    private boolean isDrived=false;
     private DQDProductAdapter dqdProductAdapter;
     private boolean isFirstLoc = true; // 是否首次定位
     private DecimalFormat decimalFormat=new DecimalFormat("0.0");
     private float syTime;
+    private double longitude;
+    private double latitude;
     private double qcLongitude;
     private double qcLatitude;
     private double scLongitude;
@@ -148,15 +140,6 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         scLongitude=daiQiangDan.getScLongitude();
         scLatitude=daiQiangDan.getScLatitude();
         scdAddressTV.setText(daiQiangDan.getScAddress());
-
-        qcStNode = PlanNode.withLocation(new LatLng(35.875561,120.048224));
-        qcEnNode = PlanNode.withLocation(new LatLng(qcLatitude,qcLongitude));
-        //qcEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, "双珠路288号东方金石");
-        //Log.e("qcLatitude===",""+qcLatitude);
-        //Log.e("qcLongitude===",""+qcLongitude);
-
-        scStNode = PlanNode.withLocation(new LatLng(qcLatitude,qcLongitude));
-        scEnNode = PlanNode.withLocation(new LatLng(scLatitude,scLongitude));
 
         AssetManager assetManager = getAssets();
         try {
@@ -274,6 +257,20 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         */
     }
 
+    public void drivingSearch(){
+        qcStNode = PlanNode.withLocation(new LatLng(latitude,longitude));
+        qcEnNode = PlanNode.withLocation(new LatLng(qcLatitude,qcLongitude));
+        //qcEnNode = PlanNode.withCityNameAndPlaceName(loaclcity, "双珠路288号东方金石");
+        //Log.e("qcLatitude===",""+qcLatitude);
+        //Log.e("qcLongitude===",""+qcLongitude);
+
+        scStNode = PlanNode.withLocation(new LatLng(qcLatitude,qcLongitude));
+        scEnNode = PlanNode.withLocation(new LatLng(scLatitude,scLongitude));
+
+        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qcStNode).to(qcEnNode));
+        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
+    }
+
     @Override
     protected void getDataFormWeb() {
 
@@ -296,8 +293,8 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qcStNode).to(qcEnNode));
-        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
+        //mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qcStNode).to(qcEnNode));
+        //mSearch.drivingSearch((new DrivingRoutePlanOption()).from(scStNode).to(scEnNode));
     }
 
     @Override
@@ -330,7 +327,7 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
             Log.e("DrivingRouteResult=","抱歉，未找到结果");
             SuggestAddrInfo sai = result.getSuggestAddrInfo();
-            rePosition(sai);
+            //rePosition(sai);
             return;
         }
         if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
@@ -338,7 +335,7 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
             // 起终点或途经点地址有岐义，通过以下接口获取建议查询信息
             SuggestAddrInfo sai = result.getSuggestAddrInfo();
             //MyToast("地址有歧义");
-            rePosition(sai);
+            //rePosition(sai);
 
             /*
             List<PoiInfo> poiInfo = result.getSuggestAddrInfo().getSuggestEndNode();
@@ -412,10 +409,24 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
             if (location == null || mMapView == null) {
                 return;
             }
-            MyLocationData locData = new MyLocationData.Builder().accuracy(location.getRadius())
-                    // 此处设置开发者获取到的方向信息，顺时针0-360
-                    .direction(100).latitude(location.getLatitude()).longitude(location.getLongitude()).build();
-            mBaidumap.setMyLocationData(locData);
+            Log.e("++++++++",""+(longitude));
+            if(longitude==0||latitude==0) {
+                longitude=location.getLongitude();
+                latitude=location.getLatitude();
+                Log.e("Lat===", "" + longitude + "," + latitude);
+
+                MyLocationData locData = new MyLocationData.Builder().accuracy(location.getRadius())
+                        // 此处设置开发者获取到的方向信息，顺时针0-360
+                        .direction(100).latitude(location.getLatitude()).longitude(location.getLongitude()).build();
+                mBaidumap.setMyLocationData(locData);
+                Log.e("33333333","3333333333");
+            }
+            else{
+                if(!isDrived) {
+                    drivingSearch();
+                    isDrived=true;
+                }
+            }
             /*
             if (isFirstLoc) {
                 isFirstLoc = false;

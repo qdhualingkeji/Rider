@@ -182,7 +182,7 @@ public class DaiSongDaAdapter extends BaseAdapter {
 
         holder.mQhAddressTV.setText(dataBean.getQhAddress());
         holder.mShAddressTV.setText(dataBean.getShAddress());
-        holder.mQwqcBtn.setOnClickListener(new View.OnClickListener() {
+        holder.mQrsdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //goQWQC(dataBean);
@@ -205,8 +205,8 @@ public class DaiSongDaAdapter extends BaseAdapter {
         TextView mQhAddressTV;
         @BindView(R.id.sh_address_tv)
         TextView mShAddressTV;
-        @BindView(R.id.qwqcBtn)
-        CardView mQwqcBtn;
+        @BindView(R.id.qrsdBtn)
+        CardView mQrsdBtn;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
