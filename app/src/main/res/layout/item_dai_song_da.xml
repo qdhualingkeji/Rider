@@ -17,6 +17,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/layout1"
             android:layout_width="match_parent"
             android:layout_height="50dp">
 
@@ -53,6 +54,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout2"
             android:layout_width="match_parent"
             android:layout_height="70dp">
 
@@ -99,6 +101,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout3"
             android:layout_width="match_parent"
             android:layout_height="50dp">
 

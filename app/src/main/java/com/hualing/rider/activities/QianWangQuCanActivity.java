@@ -72,6 +72,13 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
     RouteLine route = null;
     OverlayManager routeOverlay = null;
     private boolean isSongCan=false;
+    private boolean isDrived=false;
+    private double longitude;
+    private double latitude;
+    private double qhLongitude;
+    private double qhLatitude;
+    private double shLongitude;
+    private double shLatitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +88,12 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
     @Override
     protected void initLogic() {
         DaiQuHuoEntity.DataBean daiQuHuo = (DaiQuHuoEntity.DataBean) getIntent().getSerializableExtra("daiQuHuo");
+        qhLongitude=daiQuHuo.getQhLongitude();
+        qhLatitude=daiQuHuo.getQhLatitude();
         qhAddressTV.setText(daiQuHuo.getQhAddress());
+
+        shLongitude=daiQuHuo.getShLongitude();
+        shLatitude=daiQuHuo.getShLatitude();
         shAddressTV.setText(daiQuHuo.getShAddress());
 
         initMap();
@@ -91,12 +103,6 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
         // 初始化搜索模块，注册事件监听
         mSearch = RoutePlanSearch.newInstance();
         mSearch.setOnGetRoutePlanResultListener(this);
-
-        qhStNode = PlanNode.withLocation(new LatLng(35.875561,120.048224));
-        qhEnNode = PlanNode.withLocation(new LatLng(daiQuHuo.getQhLatitude(),daiQuHuo.getQhLongitude()));
-
-        shStNode = PlanNode.withLocation(new LatLng(daiQuHuo.getQhLatitude(),daiQuHuo.getQhLongitude()));
-        shEnNode = PlanNode.withLocation(new LatLng(daiQuHuo.getShLatitude(),daiQuHuo.getShLongitude()));
     }
 
     private void initMap(){
@@ -117,6 +123,17 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
         option.setIsNeedLocationPoiList(true);// 可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
         mLocClient.setLocOption(option);
         mLocClient.start();
+    }
+
+    public void drivingSearch(){
+        qhStNode = PlanNode.withLocation(new LatLng(latitude,longitude));
+        qhEnNode = PlanNode.withLocation(new LatLng(qhLatitude,qhLongitude));
+
+        shStNode = PlanNode.withLocation(new LatLng(qhLatitude,qhLongitude));
+        shEnNode = PlanNode.withLocation(new LatLng(shLatitude,shLongitude));
+
+        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qhStNode).to(qhEnNode));
+        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(shStNode).to(shEnNode));
     }
 
     @Override
@@ -141,8 +158,6 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(qhStNode).to(qhEnNode));
-        mSearch.drivingSearch((new DrivingRoutePlanOption()).from(shStNode).to(shEnNode));
     }
 
     @Override
@@ -240,23 +255,22 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
             if (location == null || mMapView == null) {
                 return;
             }
-            MyLocationData locData = new MyLocationData.Builder().accuracy(location.getRadius())
-                    // 此处设置开发者获取到的方向信息，顺时针0-360
-                    .direction(100).latitude(location.getLatitude()).longitude(location.getLongitude()).build();
-            mBaidumap.setMyLocationData(locData);
-            /*
-            if (isFirstLoc) {
-                isFirstLoc = false;
-                LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
-                MapStatus.Builder builder = new MapStatus.Builder();
-                builder.target(ll).zoom(18.0f);
-                mBaidumap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
-                start_edit.setText(location.getAddrStr());
-                MyToast("当前所在位置：" + location.getAddrStr());
-                driver_city.setText(location.getCity());
-                loaclcity = location.getCity();
+
+            if(longitude==0||latitude==0) {
+                longitude=location.getLongitude();
+                latitude=location.getLatitude();
+
+                MyLocationData locData = new MyLocationData.Builder().accuracy(location.getRadius())
+                        // 此处设置开发者获取到的方向信息，顺时针0-360
+                        .direction(100).latitude(location.getLatitude()).longitude(location.getLongitude()).build();
+                mBaidumap.setMyLocationData(locData);
             }
-            */
+            else{
+                if(!isDrived) {
+                    drivingSearch();
+                    isDrived=true;
+                }
+            }
         }
 
         public void onReceivePoi(BDLocation poiLocation) {

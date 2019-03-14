@@ -1,5 +1,6 @@
 package com.hualing.rider.adapter;
 
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
@@ -11,10 +12,12 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.google.gson.Gson;
 import com.hualing.rider.R;
+import com.hualing.rider.activities.DaiSongDaMapActivity;
 import com.hualing.rider.activities.MainActivity;
 import com.hualing.rider.entity.DaiSongDaEntity;
 import com.hualing.rider.global.GlobalData;
 import com.hualing.rider.model.DaiSongDaNode;
+import com.hualing.rider.util.IntentUtil;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -80,7 +83,7 @@ public class DaiSongDaAdapter extends BaseAdapter {
         RequestParams params = AsynClient.getRequestParams();
         Gson gson = new Gson();
 
-        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.GET_DAI_QU_HUO, context, params, new GsonHttpResponseHandler() {
+        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.GET_DAI_SONG_DA, context, params, new GsonHttpResponseHandler() {
             @Override
             protected Object parseResponse(String rawJsonData) throws Throwable {
                 return null;
@@ -200,6 +203,27 @@ public class DaiSongDaAdapter extends BaseAdapter {
 
         holder.mQhAddressTV.setText(dataBean.getQhAddress());
         holder.mShAddressTV.setText(dataBean.getShAddress());
+        View layout1 = convertView.findViewById(R.id.layout1);
+        layout1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goMap(dataBean);
+            }
+        });
+        View layout2 = convertView.findViewById(R.id.layout2);
+        layout2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goMap(dataBean);
+            }
+        });
+        View layout3 = convertView.findViewById(R.id.layout3);
+        layout3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goMap(dataBean);
+            }
+        });
         holder.mQrsdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,6 +232,12 @@ public class DaiSongDaAdapter extends BaseAdapter {
         });
 
         return convertView;
+    }
+
+    private void goMap(DaiSongDaEntity.DataBean daiSongDa){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("daiSongDa",daiSongDa);
+        IntentUtil.openActivityForResult(context, DaiSongDaMapActivity.class,-1,bundle);
     }
 
     class ViewHolder {

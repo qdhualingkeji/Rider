@@ -408,6 +408,7 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
             if (location == null || mMapView == null) {
                 return;
             }
+
             Log.e("++++++++",""+(longitude));
             if(longitude==0||latitude==0) {
                 longitude=location.getLongitude();
