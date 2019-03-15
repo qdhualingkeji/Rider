@@ -1,10 +1,13 @@
 package com.hualing.rider.activities;
 
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -37,12 +40,18 @@ import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.SuggestAddrInfo;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
+import com.google.gson.Gson;
 import com.hualing.rider.R;
 import com.hualing.rider.adapter.DQDProductAdapter;
 import com.hualing.rider.entity.DaiQiangDanDetailEntity;
 import com.hualing.rider.entity.DaiQiangDanEntity;
+import com.hualing.rider.global.GlobalData;
 import com.hualing.rider.overlayutil.MyDrivingRouteOverlay;
 import com.hualing.rider.overlayutil.OverlayManager;
+import com.hualing.rider.util.AllActivitiesHolder;
+import com.hualing.rider.utils.AsynClient;
+import com.hualing.rider.utils.GsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +59,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.OnMapClickListener, OnGetRoutePlanResultListener {
 
@@ -81,6 +91,8 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     ListView productLV;
     @BindView(R.id.order_number_tv)
     TextView orderNumberTV;
+    @BindView(R.id.qiangdanBtn)
+    CardView qiangdanBtn;
     private String loaclcity = null;
     boolean useDefaultIcon = false;
     // 浏览路线节点相关
@@ -115,6 +127,7 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     private double qcLatitude;
     private double scLongitude;
     private double scLatitude;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +144,7 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         mSearch = RoutePlanSearch.newInstance();
         mSearch.setOnGetRoutePlanResultListener(this);
 
+        position = getIntent().getIntExtra("position",0);
         DaiQiangDanEntity.DataBean daiQiangDan = (DaiQiangDanEntity.DataBean) getIntent().getSerializableExtra("daiQiangDan");
         qcLongitude=daiQiangDan.getQcLongitude();
         qcLatitude=daiQiangDan.getQcLatitude();
@@ -485,6 +499,50 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         mSearch.destroy();
         mMapView.onDestroy();
         super.onDestroy();
+    }
+
+    @OnClick({R.id.qiangdanBtn})
+    public void onViewClicked(View v){
+        switch (v.getId()){
+            case R.id.qiangdanBtn:
+                String orderNumber = orderNumberTV.getText().toString();
+                qiangDan(orderNumber,position);
+                break;
+        }
+    }
+
+    private void qiangDan(String orderNumber, final int position){
+        RequestParams params = AsynClient.getRequestParams();
+        params.put("orderNumber",orderNumber);
+        params.put("riderId",4);
+
+        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.CONFIRM_QIANG_DAN, DaiQiangDanDetailActivity.this, params, new GsonHttpResponseHandler() {
+            @Override
+            protected Object parseResponse(String rawJsonData) throws Throwable {
+                return null;
+            }
+
+            @Override
+            public void onFailure(int statusCode, String rawJsonData, Object errorResponse) {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, String rawJsonResponse, Object response) {
+                Log.e("rawJsonResponse======",""+rawJsonResponse);
+
+                Gson gson = new Gson();
+                DaiQiangDanEntity daiQiangDanEntity = gson.fromJson(rawJsonResponse, DaiQiangDanEntity.class);
+                String message = daiQiangDanEntity.getMessage();
+                Toast.makeText(DaiQiangDanDetailActivity.this,message,Toast.LENGTH_LONG).show();
+                if (daiQiangDanEntity.getCode() == 100) {
+                    Intent ii = new Intent();
+                    ii.putExtra("position", position);
+                    setResult(RESULT_OK,ii);
+                    AllActivitiesHolder.removeAct(DaiQiangDanDetailActivity.this);
+                }
+            }
+        });
     }
 
     public void MyToast(String s) {

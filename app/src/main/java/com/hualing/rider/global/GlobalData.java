@@ -208,6 +208,8 @@ public class GlobalData {
         public static final String LOGIN = "login";
         /* 获得待抢单数据 */
         public static final String GET_DAI_QIANG_DAN = "getDaiQiangDan";
+        /* 确认抢单 */
+        public static final String CONFIRM_QIANG_DAN = "confirmQiangDan";
         /* 获得待抢单详情数据 */
         public static final String GET_DAI_QIANG_DAN_DETAIL = "getDaiQiangDanDetail";
         /* 获得待取货数据 */

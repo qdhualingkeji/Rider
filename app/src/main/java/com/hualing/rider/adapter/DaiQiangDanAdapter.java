@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -41,6 +42,8 @@ public class DaiQiangDanAdapter extends BaseAdapter {
     }
 
     private List<DaiQiangDanEntity.DataBean> mData;
+    private static final int GO_Detail=111;
+
     private MainActivity context;
     public LocationClient mLocationClient;
     public BDLocationListener myListener;
@@ -200,7 +203,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         if(convertView==null){
             convertView = context.getLayoutInflater().inflate(R.layout.item_dai_qiang_dan,parent,false);
@@ -216,28 +219,28 @@ public class DaiQiangDanAdapter extends BaseAdapter {
         layout1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goDetail(daiQiangDan);
+                goDetail(daiQiangDan,position);
             }
         });
         View layout2 = convertView.findViewById(R.id.layout2);
         layout2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goDetail(daiQiangDan);
+                goDetail(daiQiangDan,position);
             }
         });
         View layout3 = convertView.findViewById(R.id.layout3);
         layout3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goDetail(daiQiangDan);
+                goDetail(daiQiangDan,position);
             }
         });
         View qiangdanBtn = convertView.findViewById(R.id.qiangdanBtn);
         qiangdanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                qiangDan(daiQiangDan.getOrderNumber(),position);
             }
         });
 
@@ -274,10 +277,43 @@ public class DaiQiangDanAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void goDetail(DaiQiangDanEntity.DataBean daiQiangDan){
+    private void qiangDan(String orderNumber, final int position){
+        RequestParams params = AsynClient.getRequestParams();
+        params.put("orderNumber",orderNumber);
+        params.put("riderId",4);
+
+        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.CONFIRM_QIANG_DAN, context, params, new GsonHttpResponseHandler() {
+            @Override
+            protected Object parseResponse(String rawJsonData) throws Throwable {
+                return null;
+            }
+
+            @Override
+            public void onFailure(int statusCode, String rawJsonData, Object errorResponse) {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, String rawJsonResponse, Object response) {
+                Log.e("rawJsonResponse======",""+rawJsonResponse);
+
+                Gson gson = new Gson();
+                DaiQiangDanEntity daiQiangDanEntity = gson.fromJson(rawJsonResponse, DaiQiangDanEntity.class);
+                String message = daiQiangDanEntity.getMessage();
+                if (daiQiangDanEntity.getCode() == 100) {
+                    mData.remove(position);
+                    notifyDataSetChanged();//这是适配器第一次发出通知，先获取地址，为后面计算路程提供的
+                }
+                Toast.makeText(context,message,Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void goDetail(DaiQiangDanEntity.DataBean daiQiangDan,int position){
         Bundle bundle = new Bundle();
         bundle.putSerializable("daiQiangDan",daiQiangDan);
-        IntentUtil.openActivityForResult(context, DaiQiangDanDetailActivity.class,-1,bundle);
+        bundle.putInt("position",position);
+        IntentUtil.openActivityForResult(context, DaiQiangDanDetailActivity.class,GO_Detail,bundle);
     }
 
     class ViewHolder {

@@ -1,6 +1,7 @@
 package com.hualing.rider.activities;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -25,7 +26,9 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.TextureMapView;
 import com.hualing.rider.R;
+import com.hualing.rider.adapter.DaiQiangDanAdapter;
 import com.hualing.rider.adapter.MyPagerAdapter;
+import com.hualing.rider.entity.DaiQiangDanEntity;
 import com.hualing.rider.global.TheApplication;
 
 import java.util.ArrayList;
@@ -46,6 +49,7 @@ public class MainActivity extends BaseActivity {
     private double longitude;
     private double latitude;
     private boolean initedAdapter=false;
+    private static final int GO_Detail=111;
     @BindView(R.id.drawerLayout)
     DrawerLayout mDrawerLayout;
     @BindView(R.id.toolBar)
@@ -316,5 +320,23 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK) {
+            int position = data.getIntExtra("position",0);
+            switch (requestCode) {
+                case GO_Detail:
+                    DaiQiangDanAdapter daiQiangDanAdapter = mPagerAdapter.getmAdapter1();
+                    List<DaiQiangDanEntity.DataBean> mData = daiQiangDanAdapter.getmData();
+                    mData.remove(position);
+                    daiQiangDanAdapter.notifyDataSetChanged();//这是适配器第一次发出通知，先获取地址，为后面计算路程提供的
+                    break;
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
