@@ -36,6 +36,15 @@ public class DaiSongDaEntity {
     public static class DataBean implements Serializable {
         private String qhAddress;
         private String price;
+        private String accountToken;
+
+        public String getAccountToken() {
+            return accountToken;
+        }
+
+        public void setAccountToken(String accountToken) {
+            this.accountToken = accountToken;
+        }
 
         public String getQhAddress() {
             return qhAddress;

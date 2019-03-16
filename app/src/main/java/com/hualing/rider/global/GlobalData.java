@@ -214,6 +214,10 @@ public class GlobalData {
         public static final String GET_DAI_QIANG_DAN_DETAIL = "getDaiQiangDanDetail";
         /* 获得待取货数据 */
         public static final String GET_DAI_QU_HUO = "getDaiQuHuo";
+        /* 确认取货 */
+        public static final String CONFIRM_QU_HUO = "/order/itemsToShip";
+        /* 确认送达 */
+        public static final String CONFIRM_SONG_DA = "/enterReceipt";
         /* 获得待送达数据 */
         public static final String GET_DAI_SONG_DA = "getDaiSongDa";
 

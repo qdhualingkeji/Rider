@@ -51,6 +51,7 @@ public class DaiQuHuoAdapter extends BaseAdapter {
         this.mData = mData;
     }
 
+    private static final int QianWangQuCan=112;
     private MainActivity context;
     private String loaclcity = null;
     public static int jiSuanPosition=0;
@@ -82,7 +83,7 @@ public class DaiQuHuoAdapter extends BaseAdapter {
     public void setNewData(){
 
         RequestParams params = AsynClient.getRequestParams();
-        Gson gson = new Gson();
+        params.put("riderId",4);
 
         AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.GET_DAI_QU_HUO, context, params, new GsonHttpResponseHandler() {
             @Override
@@ -165,7 +166,7 @@ public class DaiQuHuoAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         if(convertView==null){
             convertView = context.getLayoutInflater().inflate(R.layout.item_dai_qu_huo,parent,false);
@@ -208,17 +209,18 @@ public class DaiQuHuoAdapter extends BaseAdapter {
         holder.mQwqcBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goQWQC(dataBean);
+                goQWQC(dataBean,position);
             }
         });
 
         return convertView;
     }
 
-    private void goQWQC(DaiQuHuoEntity.DataBean daiQuHuo){
+    private void goQWQC(DaiQuHuoEntity.DataBean daiQuHuo,int position){
         Bundle bundle = new Bundle();
         bundle.putSerializable("daiQuHuo",daiQuHuo);
-        IntentUtil.openActivityForResult(context, QianWangQuCanActivity.class,-1,bundle);
+        bundle.putInt("position",position);
+        IntentUtil.openActivityForResult(context, QianWangQuCanActivity.class,QianWangQuCan,bundle);
     }
 
     class ViewHolder {

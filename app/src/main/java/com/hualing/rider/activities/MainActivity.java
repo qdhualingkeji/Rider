@@ -27,8 +27,12 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.TextureMapView;
 import com.hualing.rider.R;
 import com.hualing.rider.adapter.DaiQiangDanAdapter;
+import com.hualing.rider.adapter.DaiQuHuoAdapter;
+import com.hualing.rider.adapter.DaiSongDaAdapter;
 import com.hualing.rider.adapter.MyPagerAdapter;
 import com.hualing.rider.entity.DaiQiangDanEntity;
+import com.hualing.rider.entity.DaiQuHuoEntity;
+import com.hualing.rider.entity.DaiSongDaEntity;
 import com.hualing.rider.global.TheApplication;
 
 import java.util.ArrayList;
@@ -49,7 +53,9 @@ public class MainActivity extends BaseActivity {
     private double longitude;
     private double latitude;
     private boolean initedAdapter=false;
-    private static final int GO_Detail=111;
+    private static final int DaiQiangDanDetail=111;
+    private static final int QianWangQuCan=112;
+    private static final int DaiSongCanMap=113;
     @BindView(R.id.drawerLayout)
     DrawerLayout mDrawerLayout;
     @BindView(R.id.toolBar)
@@ -279,14 +285,21 @@ public class MainActivity extends BaseActivity {
         switch (position) {
             case 0:
                 Log.e("position1========",""+position);
+                DaiQiangDanAdapter daiQiangDanAdapter = mPagerAdapter.getmAdapter1();
+                daiQiangDanAdapter.setNewData();
+                daiQiangDanAdapter.notifyDataSetChanged();
                 mDot1.setSelected(true);
                 break;
             case 1:
                 Log.e("position2========",""+position);
+                DaiQuHuoAdapter daiQuHuoAdapter = mPagerAdapter.getmAdapter2();
+                daiQuHuoAdapter.setNewData();
+                daiQuHuoAdapter.notifyDataSetChanged();
                 mDot2.setSelected(true);
                 break;
             case 2:
                 Log.e("position3========",""+position);
+                mPagerAdapter.getmAdapter3().notifyDataSetChanged();
                 mDot3.setSelected(true);
                 break;
         }
@@ -328,11 +341,23 @@ public class MainActivity extends BaseActivity {
         if (resultCode == RESULT_OK) {
             int position = data.getIntExtra("position",0);
             switch (requestCode) {
-                case GO_Detail:
+                case DaiQiangDanDetail:
                     DaiQiangDanAdapter daiQiangDanAdapter = mPagerAdapter.getmAdapter1();
-                    List<DaiQiangDanEntity.DataBean> mData = daiQiangDanAdapter.getmData();
-                    mData.remove(position);
-                    daiQiangDanAdapter.notifyDataSetChanged();//这是适配器第一次发出通知，先获取地址，为后面计算路程提供的
+                    List<DaiQiangDanEntity.DataBean> daiQiangDanData = daiQiangDanAdapter.getmData();
+                    daiQiangDanData.remove(position);
+                    daiQiangDanAdapter.notifyDataSetChanged();
+                    break;
+                case QianWangQuCan:
+                    DaiQuHuoAdapter daiQuHuoAdapter = mPagerAdapter.getmAdapter2();
+                    List<DaiQuHuoEntity.DataBean> daiQuHuoData = daiQuHuoAdapter.getmData();
+                    daiQuHuoData.remove(position);
+                    daiQuHuoAdapter.notifyDataSetChanged();
+                    break;
+                case DaiSongCanMap:
+                    DaiSongDaAdapter daiSongDaAdapter = mPagerAdapter.getmAdapter3();
+                    List<DaiSongDaEntity.DataBean> daiSongDaData = daiSongDaAdapter.getmData();
+                    daiSongDaData.remove(position);
+                    daiSongDaAdapter.notifyDataSetChanged();
                     break;
             }
         }

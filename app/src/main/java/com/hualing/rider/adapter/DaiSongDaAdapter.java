@@ -1,5 +1,6 @@
 package com.hualing.rider.adapter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.route.PlanNode;
@@ -17,6 +19,7 @@ import com.hualing.rider.activities.MainActivity;
 import com.hualing.rider.entity.DaiSongDaEntity;
 import com.hualing.rider.global.GlobalData;
 import com.hualing.rider.model.DaiSongDaNode;
+import com.hualing.rider.util.AllActivitiesHolder;
 import com.hualing.rider.util.IntentUtil;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
@@ -50,6 +53,7 @@ public class DaiSongDaAdapter extends BaseAdapter {
         this.dsdNodeList = dsdNodeList;
     }
 
+    private static final int DaiSongCanMap=113;
     private MainActivity context;
     public static int jiSuanPosition=0;
     private double longitude;
@@ -164,7 +168,7 @@ public class DaiSongDaAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         if(convertView==null){
             convertView = context.getLayoutInflater().inflate(R.layout.item_dai_song_da,parent,false);
@@ -207,37 +211,70 @@ public class DaiSongDaAdapter extends BaseAdapter {
         layout1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goMap(dataBean);
+                goMap(dataBean,position);
             }
         });
         View layout2 = convertView.findViewById(R.id.layout2);
         layout2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goMap(dataBean);
+                goMap(dataBean,position);
             }
         });
         View layout3 = convertView.findViewById(R.id.layout3);
         layout3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goMap(dataBean);
+                goMap(dataBean,position);
             }
         });
         holder.mQrsdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //goQWQC(dataBean);
+                confirmSongDa(dataBean.getOrderNumber(),dataBean.getAccountToken(),position);
             }
         });
 
         return convertView;
     }
 
-    private void goMap(DaiSongDaEntity.DataBean daiSongDa){
+    private void confirmSongDa(String orderNumber, String accountToken, final int position) {
+        RequestParams params = AsynClient.getRequestParams();
+        params.put("orderNumber", orderNumber);
+        params.put("accountToken",accountToken);
+
+        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/" + GlobalData.Service.CONFIRM_SONG_DA, context, params, new GsonHttpResponseHandler() {
+            @Override
+            protected Object parseResponse(String rawJsonData) throws Throwable {
+                return null;
+            }
+
+            @Override
+            public void onFailure(int statusCode, String rawJsonData, Object errorResponse) {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, String rawJsonResponse, Object response) {
+                Log.e("rawJsonResponse======", "" + rawJsonResponse);
+
+                Gson gson = new Gson();
+                DaiSongDaEntity daiSongDaEntity = gson.fromJson(rawJsonResponse, DaiSongDaEntity.class);
+                String message = daiSongDaEntity.getMessage();
+                if (daiSongDaEntity.getCode() == 100) {
+                    mData.remove(position);
+                    notifyDataSetChanged();
+                }
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void goMap(DaiSongDaEntity.DataBean daiSongDa,int position){
         Bundle bundle = new Bundle();
         bundle.putSerializable("daiSongDa",daiSongDa);
-        IntentUtil.openActivityForResult(context, DaiSongDaMapActivity.class,-1,bundle);
+        bundle.putInt("position",position);
+        IntentUtil.openActivityForResult(context, DaiSongDaMapActivity.class,DaiSongCanMap,bundle);
     }
 
     class ViewHolder {

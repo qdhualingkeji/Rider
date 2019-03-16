@@ -42,7 +42,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
     }
 
     private List<DaiQiangDanEntity.DataBean> mData;
-    private static final int GO_Detail=111;
+    private static final int DaiQiangDanDetail=111;
 
     private MainActivity context;
     public LocationClient mLocationClient;
@@ -302,7 +302,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
                 String message = daiQiangDanEntity.getMessage();
                 if (daiQiangDanEntity.getCode() == 100) {
                     mData.remove(position);
-                    notifyDataSetChanged();//这是适配器第一次发出通知，先获取地址，为后面计算路程提供的
+                    notifyDataSetChanged();
                 }
                 Toast.makeText(context,message,Toast.LENGTH_LONG).show();
             }
@@ -313,7 +313,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
         Bundle bundle = new Bundle();
         bundle.putSerializable("daiQiangDan",daiQiangDan);
         bundle.putInt("position",position);
-        IntentUtil.openActivityForResult(context, DaiQiangDanDetailActivity.class,GO_Detail,bundle);
+        IntentUtil.openActivityForResult(context, DaiQiangDanDetailActivity.class,DaiQiangDanDetail,bundle);
     }
 
     class ViewHolder {

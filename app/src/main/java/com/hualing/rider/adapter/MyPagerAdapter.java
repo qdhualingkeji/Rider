@@ -37,6 +37,23 @@ public class MyPagerAdapter extends PagerAdapter {
 
     private DaiQiangDanAdapter mAdapter1;
     private DaiQuHuoAdapter mAdapter2;
+
+    public DaiQuHuoAdapter getmAdapter2() {
+        return mAdapter2;
+    }
+
+    public void setmAdapter2(DaiQuHuoAdapter mAdapter2) {
+        this.mAdapter2 = mAdapter2;
+    }
+
+    public DaiSongDaAdapter getmAdapter3() {
+        return mAdapter3;
+    }
+
+    public void setmAdapter3(DaiSongDaAdapter mAdapter3) {
+        this.mAdapter3 = mAdapter3;
+    }
+
     private DaiSongDaAdapter mAdapter3;
     private double longitude;
     private double latitude;

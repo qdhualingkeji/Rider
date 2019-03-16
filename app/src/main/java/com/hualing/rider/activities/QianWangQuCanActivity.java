@@ -1,11 +1,14 @@
 package com.hualing.rider.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,15 +35,22 @@ import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
+import com.google.gson.Gson;
 import com.hualing.rider.R;
 import com.hualing.rider.entity.DaiQuHuoEntity;
+import com.hualing.rider.global.GlobalData;
 import com.hualing.rider.overlayutil.MyDrivingRouteOverlay;
 import com.hualing.rider.overlayutil.OverlayManager;
+import com.hualing.rider.util.AllActivitiesHolder;
+import com.hualing.rider.utils.AsynClient;
+import com.hualing.rider.utils.GsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMapClickListener, OnGetRoutePlanResultListener {
 
@@ -52,6 +62,8 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
     TextView toQhdjlTV;
     @BindView(R.id.to_shdjl_tv)
     TextView toShdjlTV;
+    @BindView(R.id.qcwbBtn)
+    CardView qcwbBtn;
     // 地图控件
     @BindView(R.id.baiduMapView)
     TextureMapView mMapView;
@@ -79,6 +91,8 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
     private double qhLatitude;
     private double shLongitude;
     private double shLatitude;
+    private String orderNumber;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +101,7 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
 
     @Override
     protected void initLogic() {
+        position = getIntent().getIntExtra("position",0);
         DaiQuHuoEntity.DataBean daiQuHuo = (DaiQuHuoEntity.DataBean) getIntent().getSerializableExtra("daiQuHuo");
         qhLongitude=daiQuHuo.getQhLongitude();
         qhLatitude=daiQuHuo.getQhLatitude();
@@ -95,6 +110,8 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
         shLongitude=daiQuHuo.getShLongitude();
         shLatitude=daiQuHuo.getShLatitude();
         shAddressTV.setText(daiQuHuo.getShAddress());
+
+        orderNumber = daiQuHuo.getOrderNumber();
 
         initMap();
 
@@ -276,6 +293,49 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
         public void onReceivePoi(BDLocation poiLocation) {
 
         }
+    }
+
+    @OnClick({R.id.qcwbBtn})
+    public void onViewClicked(View v){
+        switch (v.getId()){
+            case R.id.qcwbBtn:
+                Log.e("orderNumber",""+orderNumber);
+                quHuo(orderNumber,position);
+                break;
+        }
+    }
+
+    private void quHuo(String orderNumber, final int position){
+        RequestParams params = AsynClient.getRequestParams();
+        params.put("orderNumber",orderNumber);
+
+        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.CONFIRM_QU_HUO, QianWangQuCanActivity.this, params, new GsonHttpResponseHandler() {
+            @Override
+            protected Object parseResponse(String rawJsonData) throws Throwable {
+                return null;
+            }
+
+            @Override
+            public void onFailure(int statusCode, String rawJsonData, Object errorResponse) {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, String rawJsonResponse, Object response) {
+                Log.e("rawJsonResponse======",""+rawJsonResponse);
+
+                Gson gson = new Gson();
+                DaiQuHuoEntity daiQuHuoEntity = gson.fromJson(rawJsonResponse, DaiQuHuoEntity.class);
+                String message = daiQuHuoEntity.getMessage();
+                Toast.makeText(QianWangQuCanActivity.this,message,Toast.LENGTH_LONG).show();
+                if (daiQuHuoEntity.getCode() == 0) {
+                    Intent ii = new Intent();
+                    ii.putExtra("position", position);
+                    setResult(RESULT_OK,ii);
+                    AllActivitiesHolder.removeAct(QianWangQuCanActivity.this);
+                }
+            }
+        });
     }
 
     public void MyToast(String s) {

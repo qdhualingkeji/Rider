@@ -1,8 +1,11 @@
 package com.hualing.rider.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,12 +32,19 @@ import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
+import com.google.gson.Gson;
 import com.hualing.rider.R;
 import com.hualing.rider.entity.DaiSongDaEntity;
+import com.hualing.rider.global.GlobalData;
 import com.hualing.rider.overlayutil.MyDrivingRouteOverlay;
 import com.hualing.rider.overlayutil.OverlayManager;
+import com.hualing.rider.util.AllActivitiesHolder;
+import com.hualing.rider.utils.AsynClient;
+import com.hualing.rider.utils.GsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class DaiSongDaMapActivity extends BaseActivity implements BaiduMap.OnMapClickListener, OnGetRoutePlanResultListener {
 
@@ -59,6 +69,8 @@ public class DaiSongDaMapActivity extends BaseActivity implements BaiduMap.OnMap
     TextView toQhdjlTV;
     @BindView(R.id.to_shdjl_tv)
     TextView toShdjlTV;
+    @BindView(R.id.qrsdBtn)
+    CardView qrsdBtn;
     // 下一个节点
     int nodeIndex = -1;
     // 节点索引,供浏览节点时使用
@@ -72,6 +84,9 @@ public class DaiSongDaMapActivity extends BaseActivity implements BaiduMap.OnMap
     private double qhLatitude;
     private double shLongitude;
     private double shLatitude;
+    private String orderNumber;
+    private String accountToken;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +95,7 @@ public class DaiSongDaMapActivity extends BaseActivity implements BaiduMap.OnMap
 
     @Override
     protected void initLogic() {
+        position = getIntent().getIntExtra("position",0);
         DaiSongDaEntity.DataBean daiSongDa = (DaiSongDaEntity.DataBean) getIntent().getSerializableExtra("daiSongDa");
         qhLongitude=daiSongDa.getQhLongitude();
         qhLatitude=daiSongDa.getQhLatitude();
@@ -88,6 +104,9 @@ public class DaiSongDaMapActivity extends BaseActivity implements BaiduMap.OnMap
         shLongitude=daiSongDa.getShLongitude();
         shLatitude=daiSongDa.getShLatitude();
         shAddressTV.setText(daiSongDa.getShAddress());
+
+        orderNumber = daiSongDa.getOrderNumber();
+        accountToken = daiSongDa.getAccountToken();
 
         initMap();
 
@@ -261,6 +280,49 @@ public class DaiSongDaMapActivity extends BaseActivity implements BaiduMap.OnMap
                 }
             }
         }
+    }
+
+    @OnClick({R.id.qrsdBtn})
+    public void onViewClicked(View v){
+        switch (v.getId()){
+            case R.id.qrsdBtn:
+                confirmSongDa(orderNumber,position);
+                break;
+        }
+    }
+
+    private void confirmSongDa(String orderNumber, final int position) {
+        RequestParams params = AsynClient.getRequestParams();
+        params.put("orderNumber", orderNumber);
+        params.put("accountToken",accountToken);
+
+        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/" + GlobalData.Service.CONFIRM_SONG_DA, DaiSongDaMapActivity.this, params, new GsonHttpResponseHandler() {
+            @Override
+            protected Object parseResponse(String rawJsonData) throws Throwable {
+                return null;
+            }
+
+            @Override
+            public void onFailure(int statusCode, String rawJsonData, Object errorResponse) {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, String rawJsonResponse, Object response) {
+                Log.e("rawJsonResponse======", "" + rawJsonResponse);
+
+                Gson gson = new Gson();
+                DaiSongDaEntity daiSongDaEntity = gson.fromJson(rawJsonResponse, DaiSongDaEntity.class);
+                String message = daiSongDaEntity.getMessage();
+                Toast.makeText(DaiSongDaMapActivity.this, message, Toast.LENGTH_LONG).show();
+                if (daiSongDaEntity.getCode() == 0) {
+                    Intent ii = new Intent();
+                    ii.putExtra("position", position);
+                    setResult(RESULT_OK, ii);
+                    AllActivitiesHolder.removeAct(DaiSongDaMapActivity.this);
+                }
+            }
+        });
     }
 
     public void MyToast(String s) {
