@@ -23,17 +23,13 @@ import com.hualing.rider.model.FunctionType;
  */
 
 public class GlobalData {
-    // 用户Id
-    public static String userId;
+    public static Integer riderID;
 
-    //昵称
-    public static String userName ;
+    public static String phone ;
 
-    //真实姓名
-    public static String realName ;
+    public static String password ;
 
-    //审核权限组，有19的话就是领导（负责人），反之是质检员
-    public static String checkQXGroup ;
+    public static String trueName ;
 
     //当前功能业务线
     public static int currentFunctionType = FunctionType.NON_SELECTED ;
@@ -51,11 +47,6 @@ public class GlobalData {
     public static String verName;
     public static String appId;
     public static String appName;
-    //关于我们
-    public static String company;
-    public static String phone;
-
-    public static String upDate = null;
 
     //启动页的图片id
     private static int launchDrawableId ;
@@ -110,8 +101,6 @@ public class GlobalData {
 
     }
 
-    private static String loginName;
-    private static String password;
     private static boolean isFirstOpen = true;
 
     public static boolean getIfFirstOpen(){

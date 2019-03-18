@@ -83,7 +83,7 @@ public class DaiQuHuoAdapter extends BaseAdapter {
     public void setNewData(){
 
         RequestParams params = AsynClient.getRequestParams();
-        params.put("riderId",4);
+        params.put("riderId",GlobalData.riderID);
 
         AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.GET_DAI_QU_HUO, context, params, new GsonHttpResponseHandler() {
             @Override

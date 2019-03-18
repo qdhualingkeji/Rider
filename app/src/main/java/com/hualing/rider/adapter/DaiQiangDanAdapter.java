@@ -280,7 +280,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
     private void qiangDan(String orderNumber, final int position){
         RequestParams params = AsynClient.getRequestParams();
         params.put("orderNumber",orderNumber);
-        params.put("riderId",4);
+        params.put("riderId",GlobalData.riderID);
 
         AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.CONFIRM_QIANG_DAN, context, params, new GsonHttpResponseHandler() {
             @Override

@@ -11,9 +11,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hualing.rider.R;
+import com.hualing.rider.entity.RiderEntity;
 import com.hualing.rider.entity.SuccessEntity;
 import com.hualing.rider.global.GlobalData;
 import com.hualing.rider.util.AllActivitiesHolder;
+import com.hualing.rider.util.SharedPreferenceUtil;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -85,11 +87,10 @@ public class LoginActivity extends BaseActivity {
      * @param phone
      * @param password
      */
-    private void login(String phone, String password){
+    private void login(final String phone, final String password){
         RequestParams params = AsynClient.getRequestParams();
         params.put("phone", phone);
         params.put("password", password);
-        Gson gson = new Gson();
 
         AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+GlobalData.Service.LOGIN, this, params, new GsonHttpResponseHandler() {
             @Override
@@ -107,14 +108,22 @@ public class LoginActivity extends BaseActivity {
                 Log.e("rawJsonResponse======",""+rawJsonResponse);
 
                 Gson gson = new Gson();
-                SuccessEntity successEntity = gson.fromJson(rawJsonResponse, SuccessEntity.class);
-                if (successEntity.getCode() == 100) {
+                RiderEntity riderEntity = gson.fromJson(rawJsonResponse, RiderEntity.class);
+                if (riderEntity.getCode() == 100) {
+                    RiderEntity.DataBean riderData = riderEntity.getData();
+                    GlobalData.riderID = riderData.getRiderID();
+                    GlobalData.phone = riderData.getPhone();
+                    GlobalData.password = riderData.getPassword();
+                    GlobalData.trueName = riderData.getTrueName();
+
+                    SharedPreferenceUtil.rememberRider(phone, password);
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     AllActivitiesHolder.removeAct(LoginActivity.this);
                 }
                 else {
-                    MyToast(successEntity.getMessage());
+                    MyToast(riderEntity.getMessage());
                 }
 
             }

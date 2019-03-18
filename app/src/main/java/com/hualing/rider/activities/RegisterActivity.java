@@ -205,7 +205,7 @@ public class RegisterActivity extends BaseActivity {
                 SuccessEntity successEntity = gson.fromJson(rawJsonResponse, SuccessEntity.class);
                 if (successEntity.getCode() == 100) {
                     MyToast(successEntity.getMessage());
-                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                     startActivity(intent);
                     AllActivitiesHolder.removeAct(RegisterActivity.this);
                 }

@@ -4,6 +4,7 @@
 
     <!-- ****************一般权限，6.0以上系统不需要额外申请****************** -->
     <permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
+
     <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
     <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -49,26 +50,25 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="IoCgdrXYaoDMdye6peRix1YMcxwbRWYc" />
-        <!--
-        android:value="C0sGP1z0tQFNXb37KxFFEd7fFxN2d9tc" />
-        -->
+        <!--         android:value="C0sGP1z0tQFNXb37KxFFEd7fFxN2d9tc" /> -->
 
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote" >
+            android:process=":remote">
             <intent-filter>
-                <action android:name="com.baidu.location.service_v2.2" >
-                </action>
+                <action android:name="com.baidu.location.service_v2.2"></action>
             </intent-filter>
         </service>
 
         <activity android:name=".activities.MainActivity">
+            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            -->
         </activity>
         <activity android:name=".baiduMap.BaiduMapActivity">
 
@@ -112,7 +112,14 @@
         </activity>
         <activity android:name=".activities.DaiQiangDanDetailActivity" />
         <activity android:name=".activities.QianWangQuCanActivity" />
-        <activity android:name=".activities.DaiSongDaMapActivity"></activity>
+        <activity android:name=".activities.DaiSongDaMapActivity" />
+        <activity android:name=".activities.LaunchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
