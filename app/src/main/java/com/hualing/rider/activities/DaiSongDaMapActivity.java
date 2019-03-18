@@ -41,6 +41,7 @@ import com.hualing.rider.overlayutil.OverlayManager;
 import com.hualing.rider.util.AllActivitiesHolder;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
+import com.hualing.rider.utils.MyHttpConfing;
 import com.loopj.android.http.RequestParams;
 
 import butterknife.BindView;
@@ -296,7 +297,7 @@ public class DaiSongDaMapActivity extends BaseActivity implements BaiduMap.OnMap
         params.put("orderNumber", orderNumber);
         params.put("accountToken",accountToken);
 
-        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/" + GlobalData.Service.CONFIRM_SONG_DA, DaiSongDaMapActivity.this, params, new GsonHttpResponseHandler() {
+        AsynClient.post(MyHttpConfing.confirmSongDa, DaiSongDaMapActivity.this, params, new GsonHttpResponseHandler() {
             @Override
             protected Object parseResponse(String rawJsonData) throws Throwable {
                 return null;

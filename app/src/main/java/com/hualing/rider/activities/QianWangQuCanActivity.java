@@ -44,6 +44,7 @@ import com.hualing.rider.overlayutil.OverlayManager;
 import com.hualing.rider.util.AllActivitiesHolder;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
+import com.hualing.rider.utils.MyHttpConfing;
 import com.loopj.android.http.RequestParams;
 
 import java.io.IOException;
@@ -309,7 +310,7 @@ public class QianWangQuCanActivity extends BaseActivity implements BaiduMap.OnMa
         RequestParams params = AsynClient.getRequestParams();
         params.put("orderNumber",orderNumber);
 
-        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.CONFIRM_QU_HUO, QianWangQuCanActivity.this, params, new GsonHttpResponseHandler() {
+        AsynClient.post(MyHttpConfing.confirmQuHuo, QianWangQuCanActivity.this, params, new GsonHttpResponseHandler() {
             @Override
             protected Object parseResponse(String rawJsonData) throws Throwable {
                 return null;

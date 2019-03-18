@@ -14,6 +14,7 @@ import com.hualing.rider.util.IntentUtil;
 import com.hualing.rider.util.SharedPreferenceUtil;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
+import com.hualing.rider.utils.MyHttpConfing;
 import com.loopj.android.http.RequestParams;
 
 import java.util.Timer;
@@ -61,7 +62,7 @@ public class LaunchActivity extends BaseActivity {
         params.put("phone", SharedPreferenceUtil.getRiderInfo()[0]);
         params.put("password", SharedPreferenceUtil.getRiderInfo()[1]);
 
-        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.LOGIN, this, params, new GsonHttpResponseHandler() {
+        AsynClient.post(MyHttpConfing.login, this, params, new GsonHttpResponseHandler() {
             @Override
             protected Object parseResponse(String rawJsonData) throws Throwable {
                 return null;

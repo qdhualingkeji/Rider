@@ -21,6 +21,7 @@ import com.hualing.rider.model.DaiQuHuoNode;
 import com.hualing.rider.util.IntentUtil;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
+import com.hualing.rider.utils.MyHttpConfing;
 import com.loopj.android.http.RequestParams;
 
 import java.text.DecimalFormat;
@@ -85,7 +86,7 @@ public class DaiQuHuoAdapter extends BaseAdapter {
         RequestParams params = AsynClient.getRequestParams();
         params.put("riderId",GlobalData.riderID);
 
-        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.GET_DAI_QU_HUO, context, params, new GsonHttpResponseHandler() {
+        AsynClient.post(MyHttpConfing.getDaiQuHuo, context, params, new GsonHttpResponseHandler() {
             @Override
             protected Object parseResponse(String rawJsonData) throws Throwable {
                 return null;

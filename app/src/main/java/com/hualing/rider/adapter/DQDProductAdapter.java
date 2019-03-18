@@ -14,6 +14,7 @@ import com.hualing.rider.entity.DaiQiangDanDetailEntity;
 import com.hualing.rider.global.GlobalData;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
+import com.hualing.rider.utils.MyHttpConfing;
 import com.loopj.android.http.RequestParams;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class DQDProductAdapter extends BaseAdapter {
         Log.e("orderNumber======",orderNumber);
         Gson gson = new Gson();
 
-        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.GET_DAI_QIANG_DAN_DETAIL,activity,params,new GsonHttpResponseHandler(){
+        AsynClient.post(MyHttpConfing.getDaiQiangDanDetail,activity,params,new GsonHttpResponseHandler(){
 
             @Override
             protected Object parseResponse(String rawJsonData) throws Throwable {

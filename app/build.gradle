@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 
-def SERVICE_URL_DEBUG = "\"http://120.27.5.36:8080/htkApp/API/riderAPI/\""  //远程电脑ip
-//def SERVICE_URL_DEBUG = "\"http://120.27.5.36:8080/QrcodeTrackerWeb/\""  //远程电脑ip
+def SERVICE_URL_DEBUG = "\"http://120.27.5.36:8080/QrcodeTrackerWeb/\""  //远程电脑ip
 def SERVICE_URL_PRERELEASE = "\"http://120.27.5.36:8080/QrcodeTrackerWeb/\""  //远程电脑ip
 def SERVICE_URL_RELEASE = "\"http://120.27.5.36:8080/QrcodeTrackerWeb/\""  //远程电脑ip
 

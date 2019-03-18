@@ -73,6 +73,13 @@ public class DaiQiangDanEntity {
 		public void setScAddress(String scAddress) {
 			this.scAddress = scAddress;
 		}
+		public String getOrderTime() {
+			return orderTime;
+		}
+
+		public void setOrderTime(String orderTime) {
+			this.orderTime = orderTime;
+		}
 		public String getOrderNumber() {
 			return orderNumber;
 		}
@@ -81,6 +88,7 @@ public class DaiQiangDanEntity {
 		}
 		private String qcAddress;
 		private String scAddress;
+		private String orderTime;
 		private String orderNumber;
 
 		public float getSyTime() {

@@ -51,6 +51,7 @@ import com.hualing.rider.overlayutil.OverlayManager;
 import com.hualing.rider.util.AllActivitiesHolder;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
+import com.hualing.rider.utils.MyHttpConfing;
 import com.loopj.android.http.RequestParams;
 
 import java.io.IOException;
@@ -73,6 +74,8 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
     TextView qcdAddressTV;
     @BindView(R.id.scd_address_tv)
     TextView scdAddressTV;
+    @BindView(R.id.orderTime_tv)
+    TextView orderTimeTV;
     @BindView(R.id.qu_can_dian_iv)
     ImageView qucandianIV;
     @BindView(R.id.song_can_dian_iv)
@@ -153,6 +156,7 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         scLongitude=daiQiangDan.getScLongitude();
         scLatitude=daiQiangDan.getScLatitude();
         scdAddressTV.setText(daiQiangDan.getScAddress());
+        orderTimeTV.setText(daiQiangDan.getOrderTime());
 
         AssetManager assetManager = getAssets();
         try {
@@ -516,7 +520,7 @@ public class DaiQiangDanDetailActivity extends BaseActivity implements BaiduMap.
         params.put("orderNumber",orderNumber);
         params.put("riderId",GlobalData.riderID);
 
-        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.CONFIRM_QIANG_DAN, DaiQiangDanDetailActivity.this, params, new GsonHttpResponseHandler() {
+        AsynClient.post(MyHttpConfing.confirmQiangDan, DaiQiangDanDetailActivity.this, params, new GsonHttpResponseHandler() {
             @Override
             protected Object parseResponse(String rawJsonData) throws Throwable {
                 return null;

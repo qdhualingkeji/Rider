@@ -23,6 +23,7 @@ import com.hualing.rider.util.AllActivitiesHolder;
 import com.hualing.rider.util.IntentUtil;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
+import com.hualing.rider.utils.MyHttpConfing;
 import com.loopj.android.http.RequestParams;
 
 import java.text.DecimalFormat;
@@ -87,7 +88,7 @@ public class DaiSongDaAdapter extends BaseAdapter {
         RequestParams params = AsynClient.getRequestParams();
         Gson gson = new Gson();
 
-        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.GET_DAI_SONG_DA, context, params, new GsonHttpResponseHandler() {
+        AsynClient.post(MyHttpConfing.getDaiSongDa, context, params, new GsonHttpResponseHandler() {
             @Override
             protected Object parseResponse(String rawJsonData) throws Throwable {
                 return null;
@@ -243,7 +244,7 @@ public class DaiSongDaAdapter extends BaseAdapter {
         params.put("orderNumber", orderNumber);
         params.put("accountToken",accountToken);
 
-        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/" + GlobalData.Service.CONFIRM_SONG_DA, context, params, new GsonHttpResponseHandler() {
+        AsynClient.post(MyHttpConfing.confirmSongDa, context, params, new GsonHttpResponseHandler() {
             @Override
             protected Object parseResponse(String rawJsonData) throws Throwable {
                 return null;

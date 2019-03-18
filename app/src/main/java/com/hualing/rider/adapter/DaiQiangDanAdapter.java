@@ -23,6 +23,7 @@ import com.hualing.rider.model.DaiQiangDanNode;
 import com.hualing.rider.util.IntentUtil;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
+import com.hualing.rider.utils.MyHttpConfing;
 import com.loopj.android.http.RequestParams;
 
 import java.util.ArrayList;
@@ -100,7 +101,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
         RequestParams params = AsynClient.getRequestParams();
         Gson gson = new Gson();
 
-        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.GET_DAI_QIANG_DAN, context, params, new GsonHttpResponseHandler() {
+        AsynClient.post(MyHttpConfing.getDaiQiangDan, context, params, new GsonHttpResponseHandler() {
             @Override
             protected Object parseResponse(String rawJsonData) throws Throwable {
                 return null;
@@ -282,7 +283,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
         params.put("orderNumber",orderNumber);
         params.put("riderId",GlobalData.riderID);
 
-        AsynClient.post("http://120.27.5.36:8080/htkApp/API/riderAPI/"+ GlobalData.Service.CONFIRM_QIANG_DAN, context, params, new GsonHttpResponseHandler() {
+        AsynClient.post(MyHttpConfing.confirmQiangDan, context, params, new GsonHttpResponseHandler() {
             @Override
             protected Object parseResponse(String rawJsonData) throws Throwable {
                 return null;
