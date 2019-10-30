@@ -80,6 +80,16 @@ public class DaiSongDaEntity {
 
         private String shAddress;
         private String orderNumber;
+        private String receivingCall;
+
+        public String getReceivingCall() {
+            return receivingCall;
+        }
+
+        public void setReceivingCall(String receivingCall) {
+            this.receivingCall = receivingCall;
+        }
+
         private float toQhdjl;
         private float toShdjl;
 

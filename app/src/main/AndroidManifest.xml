@@ -49,8 +49,9 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="IoCgdrXYaoDMdye6peRix1YMcxwbRWYc" />
+            android:value="BBhUzzhxR2eQZr79tKUNT5xTLMatFcj9" />
         <!--         android:value="C0sGP1z0tQFNXb37KxFFEd7fFxN2d9tc" /> -->
+        <!--https://blog.csdn.net/weixin_41164831/article/details/79710376-->
 
         <service
             android:name="com.baidu.location.f"
@@ -102,6 +103,16 @@
         </activity>
         <activity android:name=".activities.LoginActivity">
 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.DaiQiangDanDetailActivity" />
+        <activity android:name=".activities.QianWangQuCanActivity" />
+        <activity android:name=".activities.DaiSongDaMapActivity" />
+        <activity android:name=".activities.LaunchActivity">
             <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -109,16 +120,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             -->
-        </activity>
-        <activity android:name=".activities.DaiQiangDanDetailActivity" />
-        <activity android:name=".activities.QianWangQuCanActivity" />
-        <activity android:name=".activities.DaiSongDaMapActivity" />
-        <activity android:name=".activities.LaunchActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

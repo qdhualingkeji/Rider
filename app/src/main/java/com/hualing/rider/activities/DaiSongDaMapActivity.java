@@ -39,6 +39,7 @@ import com.hualing.rider.global.GlobalData;
 import com.hualing.rider.overlayutil.MyDrivingRouteOverlay;
 import com.hualing.rider.overlayutil.OverlayManager;
 import com.hualing.rider.util.AllActivitiesHolder;
+import com.hualing.rider.util.IntentUtil;
 import com.hualing.rider.utils.AsynClient;
 import com.hualing.rider.utils.GsonHttpResponseHandler;
 import com.hualing.rider.utils.MyHttpConfing;
@@ -86,6 +87,7 @@ public class DaiSongDaMapActivity extends BaseActivity implements BaiduMap.OnMap
     private double shLongitude;
     private double shLatitude;
     private String orderNumber;
+    private String receivingCall;
     private String accountToken;
     private int position;
 
@@ -107,6 +109,7 @@ public class DaiSongDaMapActivity extends BaseActivity implements BaiduMap.OnMap
         shAddressTV.setText(daiSongDa.getShAddress());
 
         orderNumber = daiSongDa.getOrderNumber();
+        receivingCall = daiSongDa.getReceivingCall();
         accountToken = daiSongDa.getAccountToken();
 
         initMap();
@@ -283,11 +286,14 @@ public class DaiSongDaMapActivity extends BaseActivity implements BaiduMap.OnMap
         }
     }
 
-    @OnClick({R.id.qrsdBtn})
+    @OnClick({R.id.qrsdBtn,R.id.lxgkBtn})
     public void onViewClicked(View v){
         switch (v.getId()){
             case R.id.qrsdBtn:
                 confirmSongDa(orderNumber,position);
+                break;
+            case R.id.lxgkBtn:
+                IntentUtil.callPhone(receivingCall,DaiSongDaMapActivity.this);
                 break;
         }
     }

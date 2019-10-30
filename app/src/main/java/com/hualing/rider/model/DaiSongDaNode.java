@@ -183,17 +183,17 @@ public class DaiSongDaNode implements OnGetRoutePlanResultListener {
         if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
             //Log.e("jiSuanPosition===","1111111111");
             //MyToast("抱歉，未找到结果");
-            SuggestAddrInfo sai = result.getSuggestAddrInfo();
-            rePosition(sai);
+            //SuggestAddrInfo sai = result.getSuggestAddrInfo();
+            //rePosition(sai);
             return;
         }
         if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
             //Log.e("jiSuanPosition===","2222222222222");
             //Log.e("DrivingRouteResult=","地址有歧义");
             // 起终点或途经点地址有岐义，通过以下接口获取建议查询信息
-            SuggestAddrInfo sai = result.getSuggestAddrInfo();
+            //SuggestAddrInfo sai = result.getSuggestAddrInfo();
             //MyToast("地址有歧义");
-            rePosition(sai);
+            //rePosition(sai);
             //Log.e("haveCD======",""+haveCD);
             return;
         }

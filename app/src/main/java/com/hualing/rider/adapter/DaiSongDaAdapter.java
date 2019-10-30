@@ -135,7 +135,7 @@ public class DaiSongDaAdapter extends BaseAdapter {
             shNode.setShEnNode(PlanNode.withLocation(new LatLng(dataBean.getShLatitude(),dataBean.getShLongitude())));
             shNode.setOrderNumber(dataBean.getOrderNumber());
             dsdNodeList.add(shNode);
-            if(i==5)
+            if(i==10)
                 break;
         }
     }
@@ -235,6 +235,13 @@ public class DaiSongDaAdapter extends BaseAdapter {
                 confirmSongDa(dataBean.getOrderNumber(),dataBean.getAccountToken(),position);
             }
         });
+        holder.mLxgkBtn.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                IntentUtil.callPhone(dataBean.getReceivingCall(),context);
+            }
+        });
 
         return convertView;
     }
@@ -293,6 +300,8 @@ public class DaiSongDaAdapter extends BaseAdapter {
         TextView mShAddressTV;
         @BindView(R.id.qrsdBtn)
         CardView mQrsdBtn;
+        @BindView(R.id.lxgkBtn)
+        CardView mLxgkBtn;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

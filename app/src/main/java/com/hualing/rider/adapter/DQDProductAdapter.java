@@ -36,7 +36,8 @@ public class DQDProductAdapter extends BaseAdapter {
     public void setNewData(String orderNumber){
 
         RequestParams params = AsynClient.getRequestParams();
-        params.put("orderNumber","1801233613912727");
+        //params.put("orderNumber","1801233613912727");
+        params.put("orderNumber",orderNumber);
         Log.e("orderNumber======",orderNumber);
         Gson gson = new Gson();
 

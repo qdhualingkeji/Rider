@@ -173,7 +173,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
             //scNode.setScEnNode(PlanNode.withLocation(new LatLng(35.88425874859243,120.05011426610518)));
             scNode.setOrderNumber(dataBean.getOrderNumber());
             dqdNodeList.add(scNode);
-            if(i==5)
+            if(i==10)
                 break;
         }
     }
@@ -249,6 +249,7 @@ public class DaiQiangDanAdapter extends BaseAdapter {
 
         float durationFloatQc = 0;
         float durationQc = daiQiangDan.getToQcdjl();
+        Log.e("durationQc===",""+durationQc);
         if(durationQc>=1000) {
             durationFloatQc = durationQc / 1000;
             holder.mToQcddwTV.setText("km");
