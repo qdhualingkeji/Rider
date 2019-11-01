@@ -103,16 +103,6 @@
         </activity>
         <activity android:name=".activities.LoginActivity">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".activities.DaiQiangDanDetailActivity" />
-        <activity android:name=".activities.QianWangQuCanActivity" />
-        <activity android:name=".activities.DaiSongDaMapActivity" />
-        <activity android:name=".activities.LaunchActivity">
             <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -120,6 +110,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             -->
+        </activity>
+        <activity android:name=".activities.DaiQiangDanDetailActivity" />
+        <activity android:name=".activities.QianWangQuCanActivity" />
+        <activity android:name=".activities.DaiSongDaMapActivity" />
+        <activity android:name=".activities.LaunchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

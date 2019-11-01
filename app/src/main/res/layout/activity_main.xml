@@ -9,11 +9,4 @@
 
     <include layout="@layout/activity_main_drawerlayout"/>
 
-    <com.baidu.mapapi.map.TextureMapView
-        android:id="@+id/baiduMapView"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:visibility="gone">
-    </com.baidu.mapapi.map.TextureMapView>
-
 </LinearLayout>
