@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -34,6 +35,7 @@ import com.hualing.rider.entity.DaiQiangDanEntity;
 import com.hualing.rider.entity.DaiQuHuoEntity;
 import com.hualing.rider.entity.DaiSongDaEntity;
 import com.hualing.rider.global.TheApplication;
+import com.hualing.rider.util.IntentUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -258,7 +260,7 @@ public class MainActivity extends BaseActivity {
         progressDialog.dismiss();
     }
 
-    @OnClick({R.id.dot1,R.id.dot2,R.id.dot3})
+    @OnClick({R.id.dot1,R.id.dot2,R.id.dot3,R.id.todayFinishOrder_iv})
     public void onViewClicked(View v){
         switch (v.getId()){
             case R.id.dot1:
@@ -269,6 +271,9 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.dot3:
                 changeDot(2);
+                break;
+            case R.id.todayFinishOrder_iv:
+                IntentUtil.openActivity(MainActivity.this, TodayOrderActivity.class);
                 break;
         }
     }

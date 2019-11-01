@@ -102,6 +102,7 @@
             android:layout_marginLeft="40dp"/>
 
         <ImageView
+            android:id="@+id/todayFinishOrder_iv"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/p013"
